@@ -1,0 +1,8 @@
+{
+    "AttachedPolicies": [
+        {
+            "PolicyName": "get-secret-manager-secret",
+            "PolicyArn": "arn:aws:iam::831926592389:policy/get-secret-manager-secret"
+        }
+    ]
+}

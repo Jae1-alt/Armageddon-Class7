@@ -1,0 +1,55 @@
+{
+    "SecurityGroups": [
+        {
+            "GroupId": "sg-0459ba5e67ed08e5d",
+            "IpPermissionsEgress": [
+                {
+                    "IpProtocol": "-1",
+                    "UserIdGroupPairs": [],
+                    "IpRanges": [
+                        {
+                            "CidrIp": "0.0.0.0/0"
+                        }
+                    ],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": []
+                }
+            ],
+            "VpcId": "vpc-090f4419dac17aec4",
+            "SecurityGroupArn": "arn:aws:ec2:us-east-1:831926592389:security-group/sg-0459ba5e67ed08e5d",
+            "OwnerId": "831926592389",
+            "GroupName": "ec2-lab-sg",
+            "Description": "launch-wizard-1 created 2026-01-09T21:50:46.492Z",
+            "IpPermissions": [
+                {
+                    "IpProtocol": "tcp",
+                    "FromPort": 80,
+                    "ToPort": 80,
+                    "UserIdGroupPairs": [],
+                    "IpRanges": [
+                        {
+                            "Description": "Public HTTP Access",
+                            "CidrIp": "0.0.0.0/0"
+                        }
+                    ],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": []
+                },
+                {
+                    "IpProtocol": "tcp",
+                    "FromPort": 22,
+                    "ToPort": 22,
+                    "UserIdGroupPairs": [],
+                    "IpRanges": [
+                        {
+                            "Description": "SSH from Jaes computer",
+                            "CidrIp": "66.9.166.17/32"
+                        }
+                    ],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": []
+                }
+            ]
+        }
+    ]
+}

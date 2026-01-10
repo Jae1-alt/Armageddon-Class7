@@ -1,0 +1,114 @@
+{
+    "DBInstances": [
+        {
+            "DBInstanceIdentifier": "lab-mysql",
+            "DBInstanceClass": "db.t4g.micro",
+            "Engine": "mysql",
+            "DBInstanceStatus": "available",
+            "MasterUsername": "admin",
+            "Endpoint": {
+                "Address": "lab-mysql.c21gqqme2xgm.us-east-1.rds.amazonaws.com",
+                "Port": 3306,
+                "HostedZoneId": "Z2R2ITUGPM61AM"
+            },
+            "AllocatedStorage": 20,
+            "InstanceCreateTime": "2026-01-09T21:53:05.268000+00:00",
+            "PreferredBackupWindow": "06:41-07:11",
+            "BackupRetentionPeriod": 1,
+            "DBSecurityGroups": [],
+            "VpcSecurityGroups": [
+                {
+                    "VpcSecurityGroupId": "sg-0fed6b74ad8a12285",
+                    "Status": "active"
+                }
+            ],
+            "DBParameterGroups": [
+                {
+                    "DBParameterGroupName": "default.mysql8.0",
+                    "ParameterApplyStatus": "in-sync"
+                }
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "DBSubnetGroup": {
+                "DBSubnetGroupName": "dawgs-armageddon-subnets",
+                "DBSubnetGroupDescription": "Subnets for armageddon RDS DB",
+                "VpcId": "vpc-090f4419dac17aec4",
+                "SubnetGroupStatus": "Complete",
+                "Subnets": [
+                    {
+                        "SubnetIdentifier": "subnet-040557b95437d9e14",
+                        "SubnetAvailabilityZone": {
+                            "Name": "us-east-1b"
+                        },
+                        "SubnetOutpost": {},
+                        "SubnetStatus": "Active"
+                    },
+                    {
+                        "SubnetIdentifier": "subnet-0037c22c34f274b7a",
+                        "SubnetAvailabilityZone": {
+                            "Name": "us-east-1a"
+                        },
+                        "SubnetOutpost": {},
+                        "SubnetStatus": "Active"
+                    }
+                ]
+            },
+            "PreferredMaintenanceWindow": "wed:09:43-wed:10:13",
+            "PendingModifiedValues": {},
+            "LatestRestorableTime": "2026-01-09T22:50:00+00:00",
+            "MultiAZ": false,
+            "EngineVersion": "8.0.43",
+            "AutoMinorVersionUpgrade": true,
+            "ReadReplicaDBInstanceIdentifiers": [],
+            "LicenseModel": "general-public-license",
+            "OptionGroupMemberships": [
+                {
+                    "OptionGroupName": "default:mysql-8-0",
+                    "Status": "in-sync"
+                }
+            ],
+            "PubliclyAccessible": false,
+            "StorageType": "gp2",
+            "DbInstancePort": 0,
+            "StorageEncrypted": true,
+            "KmsKeyId": "arn:aws:kms:us-east-1:831926592389:key/84a097f6-f3fb-44d2-b087-612f5ce6f7e9",
+            "DbiResourceId": "db-K36M52KWZNLGCLAO37DVGVVBYY",
+            "CACertificateIdentifier": "rds-ca-rsa2048-g1",
+            "DomainMemberships": [],
+            "CopyTagsToSnapshot": true,
+            "MonitoringInterval": 0,
+            "DBInstanceArn": "arn:aws:rds:us-east-1:831926592389:db:lab-mysql",
+            "IAMDatabaseAuthenticationEnabled": false,
+            "DatabaseInsightsMode": "standard",
+            "PerformanceInsightsEnabled": false,
+            "EnabledCloudwatchLogsExports": [
+                "audit",
+                "error",
+                "general",
+                "iam-db-auth-error",
+                "slowquery"
+            ],
+            "DeletionProtection": false,
+            "AssociatedRoles": [],
+            "MaxAllocatedStorage": 1000,
+            "TagList": [
+                {
+                    "Key": "Owner",
+                    "Value": "DAWGs-Class-7"
+                }
+            ],
+            "CustomerOwnedIpEnabled": false,
+            "ActivityStreamStatus": "stopped",
+            "BackupTarget": "region",
+            "NetworkType": "IPV4",
+            "StorageThroughput": 0,
+            "CertificateDetails": {
+                "CAIdentifier": "rds-ca-rsa2048-g1",
+                "ValidTill": "2027-01-09T21:51:42+00:00"
+            },
+            "DedicatedLogVolume": false,
+            "IsStorageConfigUpgradeAvailable": false,
+            "EngineLifecycleSupport": "open-source-rds-extended-support-disabled"
+        }
+    ]
+}
