@@ -41,7 +41,7 @@ This inbound rule restricts traffic strictly to the security group `ec2-lab-sg` 
 > Using the dedicated EC2 security group (`sg-id`) handles dynamic IP changes automatically while keeping the trust boundary tight.
 
 ### b. What port does MySQL use?
-> MySQL uses port **3306**. 🐬
+> MySQL uses port **3306**. 
 
 ### c. Why is Secrets Manager better than storing creds in code/user-data?
 > Storing credentials in application code or User Data keeps them in **plain text**, creating a high-risk vulnerability. If someone gains access to the instance or the source code repository (Git), they immediately compromise the database.
