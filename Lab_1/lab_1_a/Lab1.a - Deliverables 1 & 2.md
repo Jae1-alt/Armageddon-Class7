@@ -1,58 +1,63 @@
 
-## Screenshots
-### a. Screenshot of RDS SG inbound rule using source = ec2-lab-sg
+## 📸 Lab Screenshots
 
-This inbound rule only inbound traffic access only from the security group ec2-lab-sg on port 3306.
+### a. 🛡️ RDS Security Group Inbound Rule
+**Source:** `ec2-lab-sg` | **Port:** `3306`
+
+This inbound rule restricts traffic strictly to the security group `ec2-lab-sg` on port **3306**. This ensures only our specific EC2 instances can communicate with the database.
 
 ![](attachment/144115003f1f130589fd40131d39aa39.png)
 
 ![](attachment/a38f976b6a4e6cf525fdc1cc9afdbde6.png)
 
-"ec2-lab-sg" information:
+#### 🔍 "ec2-lab-sg" Details:
 ![](attachment/d3e095c6fe5fe560025baa79bcd34c14.png)
-The security group rule only allows inbound HTTP (Port 80) traffic access from IPv4 everywhere (0.0.0.0/0) and SHH (port 22) traffic from the Jaune's specific public IP address (at the time of the lab).
+> **Note:** This security group allows inbound **HTTP (Port 80)** traffic from everywhere (`0.0.0.0/0`) and **SSH (Port 22)** traffic specifically from my public IP address.
 
 ---
 
-### b. Screenshot of EC2 Role Attached
+### b. 🆔 EC2 IAM Role Attached
 
 ![](attachment/53444f40fa827adc99c2d8e7072cad03.png)
 
 ---
-### c. Screenshot of '/list' output showing at least 3 notes
+
+### c. 📝 App Verification (`/list` output)
+*Success! The application is connected and retrieving data.*
 
 ![](attachment/3cb2a065135d42f3cebd7599e83339cd.png)
 
 ---
 ---
 
-## Short answers:
+## 🧠 Short Answers
 
 ### a. Why is DB inbound source restricted to the EC2 security group?
+> This use of **Security Group Referencing** was done to adhere to the **Principle of Least Privilege**, ensuring that access to the database is only granted to the assigned instances.
+>
+> * **Dynamic IPs:** EC2 instances are ephemeral; if an instance is replaced, it receives a new IP. Relying on hardcoded IPs is unreliable.
+> * **Subnet Risks:** allowing the entire subnet CIDR is risky, as any resource (malicious or not) inside that subnet could reach the database.
+>
+> Using the dedicated EC2 security group (`sg-id`) handles dynamic IP changes automatically while keeping the trust boundary tight.
 
-- This use of security group referencing was done, adhering to the principle least privilege, to ensure that access to the database is only granted to the assign instance. Additionally EC2 instances are ephemeral, thus if n instance dies and replaced it will have a new IP. So relying on the IP to restrict access is far less reliable. Also setting the assigning the entire subnet access to the DB also comes with risks, as in this situation, and resource that can enter the subnet (malicious or not) can then reach the database. Thus using the dedicated EC2's security group will handle dynamic IP changes while also adhering to the principle of least privilege.
-
-### b.  What port does MySQL use?
-
-- MySQL uses port **3306**
+### b. What port does MySQL use?
+> MySQL uses port **3306**. 🐬
 
 ### c. Why is Secrets Manager better than storing creds in code/user-data?
+> Storing credentials in application code or User Data keeps them in **plain text**, creating a high-risk vulnerability. If someone gains access to the instance or the source code repository (Git), they immediately compromise the database.
+>
+> **AWS Secrets Manager provides:**
+> * 🔐 **Encryption** for secrets at rest.
+> * 🔄 **Configurable Rotation** for automated security.
+> * ⚡ **Runtime Retrieval**, allowing the app to fetch keys only when needed (in memory) rather than storing them on disk.
 
-- The code for the application and the user data is readable, plain text, so hardcoding the credentials for the database in them creates a high risk vulnerability. In this situation, should someone gain access to the instance or the source code for the application, they would then have the username and password needed to log into the database.
-  Additionally secrets manager provides:
-	- encryption for the secrets it stores
-	- configurable rotation for secrets
-	- the ability for the application to only get the key when needed
+---
 
+## ➕ Additional Insights
 
-## Additional answers:
-
-- If the security group rules where removed then the instance and the RDS database would have know rules governing access to them, and they would default to denying access. 
-- If the RDS database (DB) had its rules removed, the EC2 instance could not communicate with the DB and if you tried to initialize, add or retrieve information using the app's website you would get a "Internal Server" error. 
-- If you removed the security group rules on the EC2, when you tried to access the instance's public IP, the would continually try to load with no success.
-
-- Broader access to the DB or Secrets Manager violates the Principle of Least Privilege. Granting more access than is needed for the scope of the operation increases the potential blast radius and damage, should the resource be compromised by bad actors or become defective.
-
-- The roles used in this lab exists to grant permission to the EC2 instance, it is attached to, to be able to retrieve the secrets stored in Secret's Manager. These Secret's are referenced by the application code, and are the credentials needed to access the RDS DB.
-
-- When a role is attached to a resource, the resource's permissions are defined exclusively by the policies attached to that role. The resource can only perform actions explicitly allowed by the role; all other actions are implicitly denied.
+* 🚫 **Security Group Removal:** If the Security Group rules were removed, the instance and RDS database would have **no rules** governing access. Due to the default "Implicit Deny" behavior, they would default to blocking all traffic.
+* 🔌 **RDS Isolation:** If the RDS database rules were removed, the EC2 instance could not communicate with the DB. Attempting to use the web app would result in a **"500 Internal Server Error"**.
+* 🕸️ **Public Access:** If you removed the security group rules on the EC2, the instance would stop accepting traffic. Trying to load the public IP in a browser would result in a timeout (infinite loading).
+* 💥 **Blast Radius:** Broader access to the DB or Secrets Manager violates the **Principle of Least Privilege**. Granting more access than is needed increases the potential **blast radius** and damage, should the resource be compromised by bad actors or become defective.
+* 🔑 **IAM Roles:** The role used in this lab grants the EC2 instance permission to retrieve specific secrets from **Secrets Manager**. The app code then uses these secrets to authenticate with the RDS Database.
+* 📜 **Role Authority:** When a role is attached to a resource, the resource's permissions are **defined exclusively** by the policies attached to that role. The resource can **only** perform actions explicitly allowed by the role; all other actions are implicitly denied.
