@@ -47,17 +47,17 @@ This inbound rule restricts traffic strictly to the security group `ec2-lab-sg` 
 > Storing credentials in application code or User Data keeps them in **plain text**, creating a high-risk vulnerability. If someone gains access to the instance or the source code repository (Git), they immediately compromise the database.
 >
 > **AWS Secrets Manager provides:**
-> * 🔐 **Encryption** for secrets at rest.
-> * 🔄 **Configurable Rotation** for automated security.
-> * ⚡ **Runtime Retrieval**, allowing the app to fetch keys only when needed (in memory) rather than storing them on disk.
+> *  **Encryption** for secrets at rest.
+> *  **Configurable Rotation** for automated security.
+> *  **Runtime Retrieval**, allowing the app to fetch keys only when needed (in memory) rather than storing them on disk.
 
 ---
 
-## ➕ Additional Insights
+## ➕ Additional Answers
 
-* 🚫 **Security Group Removal:** If the Security Group rules were removed, the instance and RDS database would have **no rules** governing access. Due to the default "Implicit Deny" behavior, they would default to blocking all traffic.
-* 🔌 **RDS Isolation:** If the RDS database rules were removed, the EC2 instance could not communicate with the DB. Attempting to use the web app would result in a **"500 Internal Server Error"**.
-* 🕸️ **Public Access:** If you removed the security group rules on the EC2, the instance would stop accepting traffic. Trying to load the public IP in a browser would result in a timeout (infinite loading).
-* 💥 **Blast Radius:** Broader access to the DB or Secrets Manager violates the **Principle of Least Privilege**. Granting more access than is needed increases the potential **blast radius** and damage, should the resource be compromised by bad actors or become defective.
-* 🔑 **IAM Roles:** The role used in this lab grants the EC2 instance permission to retrieve specific secrets from **Secrets Manager**. The app code then uses these secrets to authenticate with the RDS Database.
-* 📜 **Role Authority:** When a role is attached to a resource, the resource's permissions are **defined exclusively** by the policies attached to that role. The resource can **only** perform actions explicitly allowed by the role; all other actions are implicitly denied.
+*  **Security Group Removal:** If the Security Group rules were removed, the instance and RDS database would have **no rules** governing access. Due to the default "Implicit Deny" behavior, they would default to blocking all traffic.
+*  **RDS Isolation:** If the RDS database rules were removed, the EC2 instance could not communicate with the DB. Attempting to use the web app would result in a **"500 Internal Server Error"**.
+*  **Public Access:** If you removed the security group rules on the EC2, the instance would stop accepting traffic. Trying to load the public IP in a browser would result in a timeout (infinite loading).
+*  **Blast Radius:** Broader access to the DB or Secrets Manager violates the **Principle of Least Privilege**. Granting more access than is needed increases the potential **blast radius** and damage, should the resource be compromised by bad actors or become defective.
+*  **IAM Roles:** The role used in this lab grants the EC2 instance permission to retrieve specific secrets from **Secrets Manager**. The app code then uses these secrets to authenticate with the RDS Database.
+*  **Role Authority:** When a role is attached to a resource, the resource's permissions are **defined exclusively** by the policies attached to that role. The resource can **only** perform actions explicitly allowed by the role; all other actions are implicitly denied.
