@@ -42,7 +42,7 @@ terraform.rc
 .terraform.lock.hcl
 
 # Ignore keys
-#*.json 
+*.json 
 !tests/event.json
 !tests/output.json
 *.pem
