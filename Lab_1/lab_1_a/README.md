@@ -18,92 +18,145 @@ The diagram above illustrates the final infrastructure state upon successful com
 
 ---
 
-### ⚙️ Process Optimizations & Adjustments
+## ⚙️ Process Optimizations & Adjustments
 
-While the original walkthrough was functional, several strategic adjustments were made to streamline the deployment and ensure compatibility with modern AMIs.
+While the original deployment walkthrough was functional, we have implemented several strategic adjustments to streamline the workflow, enhance security boundaries, and ensure compatibility with modern Amazon Machine Images (AMIs).
 
-#### 1. Deployment Order (EC2 vs. RDS)
+### 1. Deployment Order: EC2 Prioritization
 
-One potential workflow improvement is to provision the **EC2 Instance** _before_ creating the RDS Database.
+A key workflow improvement involves provisioning the **EC2 Instance** _before_ creating the RDS Database.
 
-- Benefit: This enables the "Connect to an EC2 compute resource" feature in the RDS console during setup.
+- **The Benefit:** This sequence unlocks the _"Connect to an EC2 compute resource"_ feature within the RDS console setup. This automates the network bridging between the compute and data tiers.
     
-    ![](attachment/3d4d7ccad302e6b87075f1ac74a4d57e.png)
+- **⚠️ Important Trade-off:** Using this automated feature creates two new Security Groups automatically.
     
-- **⚠️ Important Trade-off:** Using this automated feature creates two new Security Groups automatically to bridge the connection. If you have already manually created your Security Groups (as done in this lab), using this feature will result in redundant/duplicate Security Groups.
+    > **Note:** If you have already manually created your Security Groups (as done in this lab), using this feature will result in **redundant/duplicate Security Groups**. Use this feature only if you want AWS to handle the security group creation for you.
     
 
-#### 2. Manual DB Subnet Group
+#### ⚠️ Critical: Infrastructure Dependencies & Application State
 
-We manually created a **DB Subnet Group** to explicitly control the placement of the RDS instance. This prevents AWS from assigning the database to random subnets across Availability Zones, ensuring the data tier remains strictly within our defined private network boundary.
+Whether using this optimized workflow or the original walkthrough, strict resource ordering is required. The application expects specific infrastructure to be fully operational **before** the EC2 instance launches.
 
-#### 3. MariaDB Client Compatibility
+Prerequisites for Successful Launch:
 
-The original walkthrough referenced a `mysql` client installation that is no longer compatible with **Amazon Linux 2023**.
+Before the EC2 instance boots and the application service starts, the following must be correctly configured and active:
 
-- **The Fix:** We updated the `user_data.sh` script to use the MariaDB client, which is a drop-in replacement for MySQL on this OS.
+- Security Groups and Rules (allowing ingress/egress on correct ports).
     
-- **Command Added:** `dnf install mariadb105 -y`, adding among the first 5 commands n the script. An example of the updated script is in the  'user_data_up.sh' file
+- IAM Roles (with proper policies attached to the EC2).
+    
+- The RDS Instance (created, available, and placed in the correct DB Subnet Group).
+    
+- Secrets Manager credentials (if applicable).
+    
+
+The "Cached Failure" State:
+
+If the EC2 launches before these resources are ready, the application will attempt to connect to the database, fail, and cache this failed state in memory.
+
+Even if you rectify the underlying resource issues (e.g., fixing a Security Group rule) after the fact, visiting `http://<public_ip>/init` may still fail because the running application process is stuck in its previous "disconnected" state.
+
+Resolution:
+
+To force the application to drop its cached state and re-establish a connection to the database, you must restart the service. You can achieve this via one of two methods:
+
+1. **Service Restart (via SSH):** Run `sudo systemctl restart rdsapp`
+    
+2. **Instance Reboot (easiest):** Reboot the EC2 instance via the AWS Console to flush the state and re-run initialization.
+    
+
+### 2. Manual DB Subnet Group Configuration
+
+We explicitly created a **DB Subnet Group** rather than relying on defaults.
+
+- **Why:** This ensures the RDS instance is placed strictly within our defined private network boundary.
+    
+- **Result:** It prevents AWS from inadvertently assigning the database to random subnets across Availability Zones that may not align with our architecture.
     
 
 ---
 
-### 🔧 Troubleshooting: Manual Database Initialization
+### 3. Amazon Linux 2023 Compatibility (Critical Fix)
 
-If visiting `http://<public_ip>/init` does not automatically create the `labdb` table, you can manually initialize the database via the CLI.
+The original documentation referenced a `mysql` client installation that is deprecated and incompatible with **Amazon Linux 2023 (AL2023)**. AL2023 has replaced the legacy MySQL client with MariaDB.
 
-**Steps to resolve:**
+#### 📄 User Data Script Updates
 
-1. **Log into the EC2 instance** via SSH.
+To support the application initialization logic, the `user_data.sh` script requires a specific update. The `mariadb105` package acts as a drop-in replacement for the MySQL client.
+
+Required Change:
+
+You must replace the legacy yum install mysql command with the dnf command below. This should be placed within the first 5 lines of your script to ensure dependencies are present before the application attempts to launch.
+
+Additional code has also been added to display the error message when using the `http://<public_ip>/init` url, on the webpage.
+
+---
+
+## 🔧 Troubleshooting: Manual Database Initialization
+
+If for some reason the application's auto-initialization at `http://<public_ip>/init` fails to create the necessary tables, you must manually initialize the database via the Command Line Interface (CLI) on the appropriate EC2.
+
+**Steps to Resolve:**
+
+1. Access the Compute Tier:
     
-2. **Connect to the RDS instance:**
+    Log into your EC2 instance via SSH (or Instance Connect if enabled).
     
-    Bash
+2. Connect to the Data Tier:
     
-    ```
+    Use the MariaDB client installed via the User Data script to connect to RDS.
+    
+    
+    ```bash
     mysql -h <RDS_ENDPOINT> -u <USER> -p
     ```
     
     _(Enter your password when prompted)_
     
-3. **Verify existing databases:**
+3. Verify Current State:
     
-    SQL
+    Check if the database exists.
     
-    ```
+    
+    ```SQL
     SHOW DATABASES;
     ```
     
-4. **Create the missing database:**
+4. Create the Database:
     
-    SQL
+    If labdb is missing, create it manually.
     
-    ```
+    
+    ```SQL
     CREATE DATABASE labdb;
     ```
     
-5. **Verify creation and exit:**
+5. **Confirm and Exit:**
     
-    SQL
     
-    ```
+    ```SQL
     SHOW DATABASES;
     EXIT;
     ```
     
-6. Restart the Application Service:
+6. Restart the Application:
     
-    Force the application to reconnect to the newly created database:
+    Force the application service to reconnect to the newly created database context.
     
-    Bash
     
-    ```
+    ```bash
     sudo systemctl restart rdsapp
     ```
     
 
-Once these steps are complete, visit the initialization URL again. You should now be able to add and list notes successfully.
-
-**Example Success Output:**
+Example Success Output:
 
 ![](attachment/c51dd980c7fdf474068a803d0d85f1a8.png)
+
+
+Verification:
+
+Once these steps are complete, revisit the initialization URL (/init). You should now be able to add and list notes successfully.
+
+
+---

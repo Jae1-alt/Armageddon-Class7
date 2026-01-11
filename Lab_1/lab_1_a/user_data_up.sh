@@ -45,26 +45,34 @@ def home():
 
 @app.route("/init")
 def init_db():
-    c = get_db_creds()
-    host = c["host"]
-    user = c["username"]
-    password = c["password"]
-    port = int(c.get("port", 3306))
+    try:
+        # Get Creds from secret smanager
+        c = get_db_creds()
+        host = c["host"]
+        user = c["username"]
+        password = c["password"]
+        port = int(c.get("port", 3306))
 
-    # connect without specifying a DB first
-    conn = pymysql.connect(host=host, user=user, password=password, port=port, autocommit=True)
-    cur = conn.cursor()
-    cur.execute("CREATE DATABASE IF NOT EXISTS labdb;")
-    cur.execute("USE labdb;")
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS notes (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            note VARCHAR(255) NOT NULL
-        );
-    """)
-    cur.close()
-    conn.close()
-    return "Initialized labdb + notes table."
+        # Connect to databse
+        conn = pymysql.connect(host=host, user=user, password=password, port=port, autocommit=True)
+        cur = conn.cursor()
+
+        # Create DB & Table
+        cur.execute("CREATE DATABASE IF NOT EXISTS labdb;")
+        cur.execute("USE labdb;")
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS notes (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                note VARCHAR(255) NOT NULL
+            );
+        """)
+        cur.close()
+        conn.close()
+        return "SUCCESS: Initialized labdb + notes table."
+
+    except Exception as e:
+        # This prints the ACTUAL error to the browser window
+        return f"FAILED: {str(e)}", 500
 
 @app.route("/add", methods=["POST", "GET"])
 def add_note():
