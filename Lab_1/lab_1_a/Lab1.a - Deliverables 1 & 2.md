@@ -1,5 +1,5 @@
 
-## 📸 Lab Screenshots
+## 1. 📸 Lab Screenshots
 
 ### a. 🛡️ RDS Security Group Inbound Rule
 **Source:** `ec2-lab-sg` | **Port:** `3306`
@@ -30,7 +30,7 @@ This inbound rule restricts traffic strictly to the security group `ec2-lab-sg` 
 ---
 ---
 
-## 🧠 Short Answers
+## 2. 🧠 Short Answers
 
 ### a. Why is DB inbound source restricted to the EC2 security group?
 > This use of **Security Group Referencing** was done to adhere to the **Principle of Least Privilege**, ensuring that access to the database is only granted to the assigned instances.
