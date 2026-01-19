@@ -1,17 +1,3 @@
-
-# # comman module variables
-# variable "environment" {
-#   description = "Environment for Ec2 and other resource."
-#   type        = string
-#   default     = "test"
-# }
-
-# variable "owner" {
-#   description = "Owner for the created resourcess"
-#   type        = string
-#   default     = "Jae"
-# }
-
 ##########################################################################################
 # EC2 instance configurations
 variable "instance_count" {
@@ -137,7 +123,6 @@ variable "egress_rules" {
     cidr_ipv4   = string
     description = optional(string)
   }))
-
   default = {
     "all traffic" = {
       from_port   = 0

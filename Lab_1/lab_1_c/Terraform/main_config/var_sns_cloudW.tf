@@ -14,12 +14,6 @@ variable "sns_subscriptions" {
     protocol = string
     endpoint = string
   }))
-  default = {
-    "primary_email" = {
-      protocol = "email"
-      endpoint = "admin@example.com"
-    }
-  }
 }
 
 variable "db_alarms" {
@@ -34,16 +28,4 @@ variable "db_alarms" {
     evaluation_periods  = number
     description         = string
   }))
-  default = {
-    "lab-db-connection_failure" = {
-      metric_name         = "DBConnectionErrors"
-      namespace           = "Lab/RDSApp"
-      statistic           = "Sum"
-      comparison_operator = "GreaterThanOrEqualToThreshold"
-      threshold           = 3
-      period              = 300
-      evaluation_periods  = 1
-      description         = "Monitors database connection failures"
-    }
-  }
 }

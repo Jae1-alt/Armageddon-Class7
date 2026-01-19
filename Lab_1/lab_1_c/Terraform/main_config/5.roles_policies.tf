@@ -51,6 +51,7 @@ resource "aws_iam_policy" "db_access_policy" {
         Action = [
           "logs:CreateLogStream",
           "logs:PutLogEvents",
+          "logs:DescribeLogStreams",
           "cloudwatch:PutMetricData"
         ]
         Resource = "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/ec2/lab-rds-app:*"
