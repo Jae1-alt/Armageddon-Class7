@@ -1,5 +1,5 @@
 
-# Secure Edge Architecture: Implementing ALB, WAFv2, and Forensic Logging
+## Lab 1c Bonus B - Secure Edge Architecture: Implementing ALB, WAFv2, and Forensic Logging
 
 This lab further builds on the foundation of **Lab 1c Bonus A** by integrating an **Application Load Balancer (ALB)** in the public subnet, acting as the entry point for the EC2 instance isolated in the private subnet. To secure this public entry point, I architected and deployed a **Regional WAFv2 Web ACL** directly in front of the ALB.
 
