@@ -22,7 +22,7 @@ Instead of authoring custom firewall rules from scratch, I implemented the **AWS
     > ![](attachment/e0b6a597fac5dc063ed8f884588572de.png)
 
 - Alarm created (ALB Alarm):
-    > ![](attachment/15afb925b980adecebf658a60a134017.png)
+    > ![](attachment/c37352c9e028135e44175bc7e6f63ad7.png)
 
 - Galactic proof that the dashboard exists:
     > ![](attachment/e706339ace9873a5e80e86f5a00ef792.png)
