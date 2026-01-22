@@ -36,3 +36,6 @@ This completes the secure feedback loop. The infrastructure is now:
   
   - Confirming that HTTPS works:
   >![](attachment/dfcab20610ad2105553cf3fc960e68da.png)
+  
+- Confirmation of secure domain access in web browser:
+  >![](attachment/612c7ef1cf41d182fe9b7c62a82deaa6.png)
