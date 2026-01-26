@@ -28,7 +28,7 @@ This completes the secure feedback loop. The infrastructure is now:
 - Confirming the Hosted Zone Exists (highlighted in red):
   >![](attachment/2057925aca98439aa143279760af9b4d.png)
   
-  - Confirming App record exists(highlighted in blue):
+  - Confirming App record exists (highlighted in blue):
   >![](attachment/0f644f41b5e10df356f137844812c748.png)
   
   - Confirming certificate was issued:
