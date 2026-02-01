@@ -8,7 +8,7 @@ resource "aws_acm_certificate" "chewbacca_acm_cert01" {
   domain_name       = "${var.app_subdomain}.${var.domain_name}"
   validation_method = "DNS"
 
-  subject_alternative_names = [var.domain_name]  
+  subject_alternative_names = [var.domain_name]
 
   lifecycle {
     create_before_destroy = true

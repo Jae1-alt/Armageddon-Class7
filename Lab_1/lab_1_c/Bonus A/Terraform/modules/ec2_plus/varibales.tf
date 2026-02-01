@@ -79,7 +79,7 @@ variable "get_password" {
 
 variable "iam_instance_profile" {
   description = "Instance profile for EC2"
-  default = null
+  default     = null
 }
 
 ##########################################################################################

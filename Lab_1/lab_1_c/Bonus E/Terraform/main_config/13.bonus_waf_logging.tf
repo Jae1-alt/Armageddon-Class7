@@ -27,7 +27,7 @@ resource "aws_wafv2_web_acl_logging_configuration" "chewbacca_waf_logging01" {
 }
 
 resource "aws_cloudwatch_log_resource_policy" "waf_logging_policy" {
-  count = var.waf_log_destination == "cloudwatch" ? 1: 0 # will only make this policy if log destination is "cloudwatch"
+  count = var.waf_log_destination == "cloudwatch" ? 1 : 0 # will only make this policy if log destination is "cloudwatch"
 
   policy_name = "AWSWAF-LOGS-Policy"
   policy_document = jsonencode({

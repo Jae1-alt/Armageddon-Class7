@@ -1,17 +1,3 @@
-
-# comman module variables
-variable "environment" {
-  description = "Environment for Ec2 and other resource."
-  type        = string
-  default     = "test"
-}
-
-variable "owner" {
-  description = "Owner for the created resourcess"
-  type        = string
-  default     = "Jae"
-}
-
 ##########################################################################################
 # EC2 instance configurations
 variable "instance_count" {
@@ -118,22 +104,15 @@ variable "sg_description" {
 variable "ingress_rules" {
   description = "Map of ingress rules.Each object key is rule name."
   type = map(object({
-    from_port   = number
-    to_port     = number
-    ip_protocol = string
-    cidr_ipv4   = string
-    description = optional(string)
+    from_port                = number
+    to_port                  = number
+    ip_protocol              = string
+    cidr_ipv4                = optional(string)
+    description              = optional(string)
+    source_security_group_id = optional(string)
   }))
 
-  default = {
-    "http" = {
-      from_port   = 80
-      to_port     = 80
-      ip_protocol = "tcp"
-      cidr_ipv4   = "0.0.0.0/0"
-      description = null
-    }
-  }
+  default = null
 }
 
 variable "egress_rules" {
@@ -145,7 +124,6 @@ variable "egress_rules" {
     cidr_ipv4   = string
     description = optional(string)
   }))
-
   default = {
     "all traffic" = {
       from_port   = 0
@@ -156,6 +134,7 @@ variable "egress_rules" {
     }
   }
 }
+
 ##########################################################################################
 # key pair and tls related variables
 variable "key_needed" {
@@ -173,17 +152,17 @@ variable "key_name" {
 
 ##########################################################################################
 # tagging variables and locals
-variable "tags" {
-  description = "Custom Tag values for all resouce ceated."
-  type        = map(string)
+# variable "tags" {
+#   description = "Custom Tag values for all resouce ceated."
+#   type        = map(string)
 
-  default = {}
-}
+#   default = {}
+# }
 
-locals {
-  common_tags = {
-    Environment = var.environment
-    ManagedBy   = "Terraform"
-    Owner       = var.owner
-  }
-}
+# locals {
+#   common_tags = {
+#     Environment = var.environment
+#     ManagedBy   = "Terraform"
+#     Owner       = var.owner
+#   }
+# }

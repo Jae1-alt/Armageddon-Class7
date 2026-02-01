@@ -125,15 +125,7 @@ variable "ingress_rules" {
     description = optional(string)
   }))
 
-  default = {
-    "http" = {
-      from_port   = 80
-      to_port     = 80
-      ip_protocol = "tcp"
-      cidr_ipv4   = "0.0.0.0/0"
-      description = null
-    }
-  }
+  default = {}
 }
 
 variable "egress_rules" {
@@ -146,15 +138,7 @@ variable "egress_rules" {
     description = optional(string)
   }))
 
-  default = {
-    "all traffic" = {
-      from_port   = 0
-      to_port     = 0
-      ip_protocol = "-1"
-      cidr_ipv4   = "0.0.0.0/0"
-      description = null
-    }
-  }
+  default = {}
 }
 ##########################################################################################
 # key pair and tls related variables
