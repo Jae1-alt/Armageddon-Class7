@@ -75,8 +75,11 @@ resource "aws_lb_target_group" "jae_tg" {
   tags = merge(var.tags, { Name = "${var.project_name}-tg" })
 }
 
-# --- HTTP Listener (Standard) ---
+# --- HTTP Listener (Optional) ---
+# Not created if password exissts 
 resource "aws_lb_listener" "jae_http_listener" {
+  count = length(var.listener_secret) == 0 ? 1 : 0
+
   load_balancer_arn = aws_lb.jae_alb.arn
   port              = var.http_port
   protocol          = "HTTP"
@@ -103,6 +106,49 @@ resource "aws_lb_listener" "jae_https_listener" {
       content_type = "text/plain"
       message_body = "Forbidden"
       status_code  = "403"
+    }
+  }
+}
+
+# ------------------------------------------------------------------
+# --- Optional "Secure" Listener (Secret Provided) ---
+# Created ONLY if the password exists
+resource "aws_lb_listener" "jae_http_listener_secure" {
+  count = length(var.listener_secret) > 0 ? 1 : 0
+
+  load_balancer_arn = aws_lb.jae_alb.arn
+  port              = var.http_port
+  protocol          = "HTTP"
+
+  # Secure Mode: Default is to BLOCK
+  default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "403 Forbidden - Direct Access Not Allowed"
+      status_code  = "403"
+    }
+  }
+}
+
+# Attaches only to the SECURE listener
+resource "aws_lb_listener_rule" "allow_cloudfront_secret" {
+  count = length(var.listener_secret) > 0 ? 1 : 0
+
+  # Note the array index [0] because we are referencing a resource with 'count'
+  listener_arn = aws_lb_listener.jae_http_listener_secure[0].arn
+  priority     = 10
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.jae_tg.arn
+  }
+
+  condition {
+    http_header {
+      http_header_name = var.http_header_name
+      values           = [var.listener_secret]
     }
   }
 }

@@ -28,7 +28,7 @@ locals {
 }
 
 # =========================================================================
-# AUTO SCALING GROUP (ASG) CONFIG
+# AUTO SCALING GROUP CONFIG
 # =========================================================================
 
 variable "min_size" {
@@ -128,7 +128,7 @@ variable "iam_instance_profile" {
 variable "create_sg" {
   description = "Controls if a new Security Group is created."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "vpc_id" {
@@ -191,7 +191,7 @@ variable "egress_rules" {
 # ADDITONAL SECURITY GROUPS CONFIG
 # =========================================================================
 variable "added_ingress_rules" {
-  description = "Map to allow additonal ingress for security group IDs and/or the ports to open for them."
+  description = "Allows additonal ingress rule for security group."
   type = map(object({
     source_security_group_id = optional(string)
     from_port                = number

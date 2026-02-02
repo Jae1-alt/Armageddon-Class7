@@ -52,7 +52,7 @@ module "compute_tokyo" {
   sg_name        = var.asg_config["tokyo"].sg_name
   sg_description = var.asg_config["tokyo"].sg_description
   ingress_rules  = var.asg_config["tokyo"].ingress_rules
-  added_ingress_rules = {
+  added_ingress_rules = { # only allowing ingress traffic from the alb
     "alb_traffic" = {
       source_security_group_id = module.alb_tokyo.security_group_id
       from_port                = 80
@@ -61,11 +61,6 @@ module "compute_tokyo" {
       description              = "Allow traffic from the Tokyo ALB"
     }
   }
-
-  depends_on = [
-    aws_iam_role_policy_attachment.ssm_core,
-    aws_iam_role_policy_attachment.cw_agent_policy # optional, but good practice
-  ]
 }
 
 ##########################################################################
@@ -97,4 +92,7 @@ module "alb_tokyo" {
   # certificate_arn    = aws_acm_certificate_validation.chewbacca_acm_validation01.certificate_arn
   enable_access_logs    = var.alb_config["tokyo"].enable_access_logs
   create_https_listener = var.alb_config["tokyo"].create_https_listener
+
+  listener_secret  = random_password.chewbacca_origin_header_value01
+  http_header_name = var.http_header_name
 }

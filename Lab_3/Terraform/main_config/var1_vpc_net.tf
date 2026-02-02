@@ -12,6 +12,10 @@ variable "owner" {
   default     = "Jae"
 }
 
+variable "project_name" {
+  type = string
+}
+
 variable "networks" {
   description = "Map of all regional network configurations (Tokyo & Brazil)"
   type = map(object({

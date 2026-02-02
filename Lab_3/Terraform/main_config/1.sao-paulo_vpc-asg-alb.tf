@@ -86,24 +86,24 @@
 #   environment  = var.environment
 #   tags         = var.tags
 
-#   vpc_id        = module.vpc_sao_paulo.vpc_id
-#   subnet_ids    = module.vpc_sao_paulo.public_subnet_id
-#   log_bucket_id = ""
-#   log_prefix    = "sao-paulo"
+#   vpc_id     = module.vpc_sao_paulo.vpc_id
+#   subnet_ids = module.vpc_sao_paulo.public_subnet_id
+#   #   log_bucket_id = ""
+#   #   log_prefix    = "sao-paulo"
 
 #   alb_name           = var.alb_config["sao-paulo"].alb_name
 #   internal           = var.alb_config["sao-paulo"].internal
 #   load_balancer_type = var.alb_config["sao-paulo"].load_balancer_type
 
-#   alb_ingress_rules   = var.alb_config["sao-paulo"].alb_ingress_rules
-#   alb_egress_rules    = var.alb_config["sao-paulo"].alb_egress_rules
-#   health_check_config = var.alb_config["sao-paulo"].health_check_config
+#   alb_ingress_rules     = var.alb_config["sao-paulo"].alb_ingress_rules
+#   alb_egress_rules      = var.alb_config["sao-paulo"].alb_egress_rules
+#   health_check_config   = var.alb_config["sao-paulo"].health_check_config
 #   create_https_listener = var.alb_config["sao-paulo"].create_https_listener
 
 
 #   # --- Listeners & Logs ---
-#   http_port          = var.alb_config["sao-paulo"].http_port
-#   https_port         = var.alb_config["sao-paulo"].https_port
-#   certificate_arn    = aws_acm_certificate_validation.chewbacca_acm_validation01.certificate_arn
+#   http_port  = var.alb_config["sao-paulo"].http_port
+#   https_port = var.alb_config["sao-paulo"].https_port
+#   #   certificate_arn    = aws_acm_certificate_validation.chewbacca_acm_validation01.certificate_arn
 #   enable_access_logs = var.alb_config["sao-paulo"].enable_access_logs
 # }

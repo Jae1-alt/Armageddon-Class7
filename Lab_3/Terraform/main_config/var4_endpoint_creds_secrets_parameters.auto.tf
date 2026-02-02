@@ -1,3 +1,17 @@
+# ##############################################################################
+# ENDPOINT SERVICES +
+# ##############################################################################
+
+variable "endpoint_services" {
+  description = "List of AWS services to create Interface Endpoints for"
+  type        = list(string)
+  default     = []
+}
+
+# ##############################################################################
+# CREDENTIALS AND SECRETS
+# ##############################################################################
+
 variable "secret_name" {
   type = string
 }
@@ -39,8 +53,9 @@ variable "engine" {
   default     = null
 }
 
-#######
-# SSM Parameters
+# ========================================================================
+# SSM PARAMETERS CONFIG
+# ========================================================================
 variable "parameters" {
   description = "Values needed for parameter creation"
   type = map(object({

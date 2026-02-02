@@ -56,8 +56,8 @@ variable "alb_config" {
       }
     )
 
-    health_check_config = optional(object({ #Setting commonly used varibales accros all regions
-      path                = optional(string, "/health")
+    health_check_config = optional(object({       #Setting commonly used varibales accros all regions
+      path                = optional(string, "/") # aim to update app to have '/health' path for proper health checks
       protocol            = optional(string, "HTTP")
       matcher             = optional(string, "200-299")
       interval            = optional(number, 15)
@@ -73,8 +73,5 @@ variable "alb_config" {
   }))
 }
 
-# --- Global Variables ---
-variable "project_name" {
-  type = string
-}
+
 

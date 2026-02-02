@@ -22,7 +22,7 @@ resource "aws_vpc_endpoint" "s3_gateway" {
   service_name      = "com.amazonaws.${var.networks["tokyo"].region}.s3"
   vpc_endpoint_type = "Gateway"
 
-  route_table_ids = [module.main_vpc.private_rt_id, module.main_vpc.private_nat_rt_id]
+  route_table_ids = [module.main_vpc.private_rt_id]
 
   tags = { Name = "${var.environment}-s3-gateway" }
 }

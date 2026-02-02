@@ -153,3 +153,16 @@ variable "certificate_arn" {
   type    = string
   default = null
 }
+
+# --- Optional Listener Password & Header, secret will trigger new http creation ---
+variable "listener_secret" {
+  description = "Shared secret for; If empty, ALB is open to the world."
+  type        = string
+  default     = ""
+}
+
+variable "http_header_name" {
+  description = "Shared secret for; If empty, ALB is open to the world."
+  type        = string
+  default     = ""
+}
