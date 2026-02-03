@@ -31,9 +31,9 @@ resource "aws_vpc_endpoint" "s3_gateway_sp" {
   tags = { Name = "${var.environment}-s3-gateway" }
 }
 
-# ##################################################################
+# #################################################################
 # VPC ENDPOINTS SECURITY GROUP CONFIG
-# ##################################################################
+# #################################################################
 
 resource "aws_security_group" "vpce_sg_sp" {
   provider = aws.sao-paulo
