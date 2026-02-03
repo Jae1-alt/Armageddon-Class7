@@ -9,7 +9,7 @@ data "aws_caller_identity" "jae_self01" {}
 
 resource "aws_s3_bucket" "chewbacca_alb_logs_bucket01" {
   count  = var.enable_alb_access_logs ? 1 : 0
-  bucket = "${var.project_name}-alb-logs-${data.aws_caller_identity.jae_self01.account_id}"
+  bucket = "${var.project_name}-${var.networks["tokyo"].region}-alb-logs-${data.aws_caller_identity.jae_self01.account_id}"
 
   force_destroy = true
 
@@ -64,6 +64,7 @@ resource "aws_s3_bucket_policy" "chewbacca_alb_logs_policy01" {
 ############################################
 
 resource "aws_wafv2_web_acl" "chewbacca_waf01" {
+  provider = aws.us_e_1
 
   count = var.enable_waf ? 1 : 0
 
@@ -110,6 +111,8 @@ resource "aws_wafv2_web_acl" "chewbacca_waf01" {
 ###########################################################
 
 resource "aws_cloudwatch_log_group" "chewbacca_waf_log_group01" {
+  provider = aws.us_e_1
+
 
   count = var.waf_log_destination == "cloudwatch" ? 1 : 0
 
@@ -123,6 +126,8 @@ resource "aws_cloudwatch_log_group" "chewbacca_waf_log_group01" {
 }
 
 resource "aws_wafv2_web_acl_logging_configuration" "chewbacca_waf_logging01" {
+  provider = aws.us_e_1
+
 
   count = var.enable_waf && var.waf_log_destination == "cloudwatch" ? 1 : 0
 

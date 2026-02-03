@@ -12,7 +12,7 @@ resource "aws_sns_topic_subscription" "dynamic_subs_sp" {
 
   for_each = var.sns_subscriptions
 
-  topic_arn = aws_sns_topic.db_alerts.arn
+  topic_arn = aws_sns_topic.db_alerts_sp.arn
   protocol  = each.value.protocol
   endpoint  = each.value.endpoint
 }
@@ -33,7 +33,7 @@ resource "aws_cloudwatch_metric_alarm" "db_alarms_sp" {
   alarm_description   = each.value.description
   treat_missing_data  = "notBreaching" # added so that no added errors ais read as OK
 
-  alarm_actions = [aws_sns_topic.db_alerts.arn]
+  alarm_actions = [aws_sns_topic.db_alerts_sp.arn]
 
   tags = var.networks["sao-paulo"].tags
 }

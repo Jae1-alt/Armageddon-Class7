@@ -78,7 +78,7 @@ resource "aws_lb_target_group" "jae_tg" {
 # --- HTTP Listener (Optional) ---
 # Not created if password exissts 
 resource "aws_lb_listener" "jae_http_listener" {
-  count = length(var.listener_secret) == 0 ? 1 : 0
+  count = var.enable_secure_listener ? 0 : 1
 
   load_balancer_arn = aws_lb.jae_alb.arn
   port              = var.http_port
@@ -114,7 +114,7 @@ resource "aws_lb_listener" "jae_https_listener" {
 # --- Optional "Secure" Listener (Secret Provided) ---
 # Created ONLY if the password exists
 resource "aws_lb_listener" "jae_http_listener_secure" {
-  count = length(var.listener_secret) > 0 ? 1 : 0
+  count = var.enable_secure_listener ? 1 : 0
 
   load_balancer_arn = aws_lb.jae_alb.arn
   port              = var.http_port
@@ -134,7 +134,7 @@ resource "aws_lb_listener" "jae_http_listener_secure" {
 
 # Attaches only to the SECURE listener
 resource "aws_lb_listener_rule" "allow_cloudfront_secret" {
-  count = length(var.listener_secret) > 0 ? 1 : 0
+  count = var.enable_secure_listener ? 1 : 0
 
   # Note the array index [0] because we are referencing a resource with 'count'
   listener_arn = aws_lb_listener.jae_http_listener_secure[0].arn

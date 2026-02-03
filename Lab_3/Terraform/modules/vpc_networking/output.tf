@@ -52,7 +52,7 @@ output "public_rt_id" {
 }
 
 output "private_rt_id" {
-  description = "The id for the created public route table."
+  description = "The id for the created private isolated route table."
   value       = one(aws_route_table.private[*].id)
 }
 

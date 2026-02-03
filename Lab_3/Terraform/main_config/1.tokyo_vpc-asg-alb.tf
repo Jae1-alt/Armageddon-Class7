@@ -21,6 +21,13 @@ module "main_vpc" {
   enable_nat_gateway = var.networks["tokyo"].enable_nat_gateway
 }
 
+# Additonal route from tokyo to Liberdade (Sao-Paulo)  
+resource "aws_route" "shinjuku_to_sp_route01" {
+  route_table_id         = module.main_vpc.private_rt_id
+  destination_cidr_block = module.vpc_sao_paulo.vpc_cidr # Sao Paulo VPC CIDR (students supply)
+  transit_gateway_id     = aws_ec2_transit_gateway.shinjuku_tgw01.id
+}
+
 # ##########################################################################
 # TOKYO ASG COMPUTE (Hub)
 # ##########################################################################
@@ -87,12 +94,13 @@ module "alb_tokyo" {
   health_check_config = var.alb_config["tokyo"].health_check_config
 
   # --- Listeners & Logs ---
-  http_port  = var.alb_config["tokyo"].http_port
-  https_port = var.alb_config["tokyo"].https_port
-  # certificate_arn    = aws_acm_certificate_validation.chewbacca_acm_validation01.certificate_arn
+  http_port             = var.alb_config["tokyo"].http_port
+  https_port            = var.alb_config["tokyo"].https_port
+  certificate_arn       = aws_acm_certificate_validation.chewbacca_acm_validation01.certificate_arn
   enable_access_logs    = var.alb_config["tokyo"].enable_access_logs
   create_https_listener = var.alb_config["tokyo"].create_https_listener
 
-  listener_secret  = random_password.chewbacca_origin_header_value01
-  http_header_name = var.http_header_name
+  listener_secret        = random_password.chewbacca_origin_header_value01.result
+  http_header_name       = var.http_header_name
+  enable_secure_listener = var.enable_secure_listener
 }

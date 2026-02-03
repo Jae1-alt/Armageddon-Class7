@@ -4,7 +4,60 @@ data "aws_route53_zone" "selected" {
 }
 
 ########################################################################
-# New Route53 Record association for ALB
+# Route53 Internal Routing Logic
+########################################################################
+
+# --- Route 53 Record: Tokyo Latency Target ---
+resource "aws_route53_record" "origin_tokyo" {
+  # The Zone to put the record in (topclick.click)
+  zone_id = data.aws_route53_zone.selected.zone_id
+
+  # The "Back Door" name (origin.topclick.click)
+  name = "origin.${var.domain_name}"
+  type = "A"
+
+  # Because we will have two records with the SAME name ("origin..."),
+  # AWS requires this ID to distinguish them.
+  set_identifier = "Tokyo-Latency-Target"
+
+  alias {
+    name                   = module.alb_tokyo.alb_dns_name
+    zone_id                = module.alb_tokyo.alb_zone_id
+    evaluate_target_health = true
+  }
+
+  # "Use this record if ap-northeast-1 is the fastest region for the requester"
+  latency_routing_policy {
+    region = "ap-northeast-1"
+  }
+}
+
+# --- Route 53 Record: São Paulo Latency Target ---
+resource "aws_route53_record" "origin_saopaulo" {
+  zone_id = data.aws_route53_zone.selected.zone_id
+
+  # This creates the "One Name, Two Destinations" setup.
+  name = "origin.${var.domain_name}"
+  type = "A"
+
+  # Unique ID for this specific path
+  set_identifier = "SaoPaulo-Latency-Target"
+
+  alias {
+    name                   = module.alb_sao_paulo.alb_dns_name # Pointing to SP ALB
+    zone_id                = module.alb_sao_paulo.alb_zone_id
+    evaluate_target_health = true
+  }
+
+  # "Use this record if sa-east-1 is the fastest region"
+  latency_routing_policy {
+    region = "sa-east-1"
+  }
+}
+
+
+########################################################################
+# Route53 Record association for ALB
 ########################################################################
 # 2. The Certificate Request
 resource "aws_acm_certificate" "chewbacca_acm_cert01" {
@@ -42,7 +95,7 @@ resource "aws_acm_certificate_validation" "chewbacca_acm_validation01" {
 }
 
 ########################################################################
-# New Route53 Record association for CloudFront Distribution
+# Route53 Records
 ########################################################################
 # Explanation: DNS now points to CloudFront — nobody should ever see the ALB again.
 resource "aws_route53_record" "chewbacca_apex_to_cf01" {
@@ -57,7 +110,7 @@ resource "aws_route53_record" "chewbacca_apex_to_cf01" {
   }
 }
 
-# Explanation: app.chewbacca-growl.com also points to CloudFront — same doorway, different sign.
+# Explanation: app.DNA_name also points to CloudFront — same doorway, different sign.
 resource "aws_route53_record" "chewbacca_app_to_cf01" {
   zone_id = data.aws_route53_zone.selected.zone_id
   name    = "${var.app_subdomain}.${var.domain_name}"

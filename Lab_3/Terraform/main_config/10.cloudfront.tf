@@ -1,3 +1,10 @@
+# Random password to be used by CF, Route 53 and ALBs
+resource "random_password" "chewbacca_origin_header_value01" {
+  length  = 32
+  special = false
+}
+
+
 # Explanation: CloudFront is the only public doorway — Chewbacca stands behind it with private infrastructure.
 resource "aws_cloudfront_distribution" "chewbacca_cf01" {
   enabled         = true
@@ -5,8 +12,8 @@ resource "aws_cloudfront_distribution" "chewbacca_cf01" {
   comment         = "${var.project_name}-cf01"
 
   origin {
-    origin_id   = "${var.project_name}-alb-origin01"
-    domain_name = aws_lb.chewbacca_alb01.dns_name
+    origin_id   = "GlobalSmartOrigin"
+    domain_name = "origin.${var.domain_name}"
 
     custom_origin_config {
       http_port              = 80
@@ -17,7 +24,7 @@ resource "aws_cloudfront_distribution" "chewbacca_cf01" {
 
     # Explanation: CloudFront whispers the secret growl — the ALB only trusts this.
     custom_header {
-      name  = "X-Chewbacca-Growl"
+      name  = var.http_header_name
       value = random_password.chewbacca_origin_header_value01.result
     }
   }
@@ -25,7 +32,7 @@ resource "aws_cloudfront_distribution" "chewbacca_cf01" {
   # Default cache adjustment--------------------------------------------------------------------------------------
   # Explanation: Default behavior is conservative—Chewbacca assumes dynamic until proven static.
   default_cache_behavior {
-    target_origin_id       = "${var.project_name}-alb-origin01"
+    target_origin_id       = "GlobalSmartOrigin"
     viewer_protocol_policy = "redirect-to-https"
 
     allowed_methods = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
@@ -39,7 +46,7 @@ resource "aws_cloudfront_distribution" "chewbacca_cf01" {
   # Explanation: Static behavior is the speed lane—Chewbacca caches it hard for performance.
   ordered_cache_behavior {
     path_pattern           = "/static/*"
-    target_origin_id       = "${var.project_name}-alb-origin01"
+    target_origin_id       = "GlobalSmartOrigin"
     viewer_protocol_policy = "redirect-to-https"
 
     allowed_methods = ["GET", "HEAD", "OPTIONS"]
@@ -54,7 +61,7 @@ resource "aws_cloudfront_distribution" "chewbacca_cf01" {
   # Explanation: Public feed is cacheable—but only if the origin explicitly says so. Chewbacca demands consent.
   ordered_cache_behavior {
     path_pattern           = "/api/public-feed"
-    target_origin_id       = "${var.project_name}-alb-origin01"
+    target_origin_id       = "GlobalSmartOrigin"
     viewer_protocol_policy = "redirect-to-https"
 
     allowed_methods = ["GET", "HEAD", "OPTIONS"]
@@ -71,7 +78,7 @@ resource "aws_cloudfront_distribution" "chewbacca_cf01" {
   # Explanation: Everything else under /api is dangerous by default—Chewbacca disables caching until proven safe.
   ordered_cache_behavior {
     path_pattern           = "/api/*"
-    target_origin_id       = "${var.project_name}-alb-origin01"
+    target_origin_id       = "GlobalSmartOrigin"
     viewer_protocol_policy = "redirect-to-https"
 
     allowed_methods = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
@@ -108,6 +115,95 @@ resource "aws_cloudfront_distribution" "chewbacca_cf01" {
 
   lifecycle {
     create_before_destroy = true
+  }
+}
+
+##############################################################
+# Lab 2B-Honors - Origin Driven Caching (Managed Policies)
+##############################################################
+
+# Explanation: Chewbacca uses AWS-managed policies—battle-tested configs so students learn the real names.
+data "aws_cloudfront_cache_policy" "chewbacca_use_origin_cache_headers01" {
+  name = "UseOriginCacheControlHeaders"
+}
+
+# Explanation: Same idea, but includes query strings in the cache key when your API truly varies by them.
+data "aws_cloudfront_cache_policy" "chewbacca_use_origin_cache_headers_qs01" {
+  name = "UseOriginCacheControlHeaders-QueryStrings"
+}
+
+# Explanation: Origin request policies let us forward needed stuff without polluting the cache key.
+# (Origin request policies are separate from cache policies.) :contentReference[oaicite:6]{index=6}
+data "aws_cloudfront_origin_request_policy" "chewbacca_orp_all_viewer01" {
+  name = "Managed-AllViewer"
+}
+
+data "aws_cloudfront_origin_request_policy" "chewbacca_orp_all_viewer_except_host01" {
+  name = "Managed-AllViewerExceptHostHeader"
+}
+
+# The "No Cache" Policy
+data "aws_cloudfront_cache_policy" "caching_disabled" {
+  name = "Managed-CachingDisabled"
+}
+
+#################################################
+# Cache policy for static content (aggressive)
+##############################################################
+
+# Static files are the easy win—Chewbacca caches them like hyperfuel for speed.
+resource "aws_cloudfront_cache_policy" "chewbacca_cache_static01" {
+  name        = "${var.project_name}-cache-static01"
+  comment     = "Aggressive caching for /static/*"
+  default_ttl = 86400    # 1 day
+  max_ttl     = 31536000 # 1 year
+  min_ttl     = 0
+
+  parameters_in_cache_key_and_forwarded_to_origin {
+    # Static should not vary on cookies—Chewbacca refuses to cache 10,000 versions of a PNG.
+    cookies_config { cookie_behavior = "none" }
+
+    # Static should not vary on query strings (unless you do versioning); students can change later.
+    query_strings_config { query_string_behavior = "none" }
+
+    # Keep headers out of cache key to maximize hit ratio.
+    headers_config { header_behavior = "none" }
+
+    enable_accept_encoding_gzip   = true
+    enable_accept_encoding_brotli = true
+  }
+}
+
+
+##################################################################
+# Origin request policy for static (minimal)
+##############################################################
+
+# Static origins need almost nothing—Chewbacca forwards minimal values for maximum cache sanity.
+resource "aws_cloudfront_origin_request_policy" "chewbacca_orp_static01" {
+  name    = "${var.project_name}-orp-static01"
+  comment = "Minimal forwarding for static assets"
+
+  cookies_config { cookie_behavior = "none" }
+  query_strings_config { query_string_behavior = "none" }
+  headers_config { header_behavior = "none" }
+}
+
+##############################################################
+# Response headers policy (optional but nice)
+##############################################################
+
+# Make caching intent explicit—Chewbacca stamps Cache-Control so humans and CDNs agree.
+resource "aws_cloudfront_response_headers_policy" "chewbacca_rsp_static01" {
+  name    = "${var.project_name}-rsp-static01"
+  comment = "Add explicit Cache-Control for static content"
+
+  custom_headers_config {
+    items {
+      header   = "Cache-Control"
+      override = true
+      value    = "public, max-age=86400, immutable"
+    }
   }
 }
 

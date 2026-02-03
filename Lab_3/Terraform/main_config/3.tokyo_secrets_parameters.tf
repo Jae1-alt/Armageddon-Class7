@@ -1,3 +1,11 @@
+# Terraform password generated only for lab
+# Only one is needed, password generated in Tokyo will be used in all regions
+resource "random_password" "password" {
+  length           = 30
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+#---------------------------------------------
+
 resource "aws_secretsmanager_secret" "imported_secret" {
   description             = var.secret_description
   name                    = var.secret_name
@@ -6,12 +14,6 @@ resource "aws_secretsmanager_secret" "imported_secret" {
   tags = var.secret_tag
 
   tags_all = var.secret_tag
-}
-
-# Terraform password generated only for lab
-resource "random_password" "password" {
-  length           = 30
-  override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
 resource "aws_secretsmanager_secret_version" "imported_version" {

@@ -30,7 +30,7 @@ output "target_group_arn" {
 
 output "http_listener_arn" {
   description = "The ARN of the HTTP listener."
-  value       = aws_lb_listener.jae_http_listener.arn
+  value       = aws_lb_listener.jae_http_listener[*].arn
 }
 
 output "https_listener_arn" {
