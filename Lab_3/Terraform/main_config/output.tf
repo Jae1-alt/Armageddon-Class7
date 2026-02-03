@@ -1,7 +1,28 @@
-output "vpc_id" {
+output "tokyo_vpc_id" {
   description = "ID of the created VPC"
   value       = module.main_vpc.vpc_id
 }
+
+output "sao-paulo_vpc_id" {
+  description = "ID of the created VPC"
+  value       = module.vpc_sao_paulo.vpc_id
+}
+
+output "tokyo_tgw_id" {
+  description = "ID of the created TGW in Tokyo"
+  value       = aws_ec2_transit_gateway.shinjuku_tgw01.id
+}
+
+output "sao-paulo_tgw_id" {
+  description = "ID of the created TGW in Sao Paulo"
+  value       = aws_ec2_transit_gateway.liberdade_tgw01.id
+}
+
+output "tokyo_rds_endpoint" {
+  description = "rds endpoint for DB in tokyo"
+  value       = aws_db_instance.mysql_db.address
+}
+
 
 # # useful SSM Connection String
 # output "ssm_login_helper" {
@@ -12,22 +33,3 @@ output "vpc_id" {
 
 ############################################
 
-
-# output "catloving_chewbacca_app_url" {
-#   description = "Access the secure application here"
-#   value       = "https://${local.chewbacca_fqdn}"
-# }
-
-# 2. THE INFRASTRUCTURE: ALB Details
-# output "catloving_chewbacca_alb_dns_name" {
-#   description = "The raw DNS of the Load Balancer"
-#   value       = aws_lb.chewbacca_alb01.dns_name
-# }
-
-# output "chewbacca_waf_id" {
-#   value = var.enable_waf ? aws_wafv2_web_acl.chewbacca_waf01[0].id : null
-# }
-
-# output "cloudfront_distribution_id" {
-#   value = aws_cloudfront_distribution.chewbacca_cf01.id
-# }

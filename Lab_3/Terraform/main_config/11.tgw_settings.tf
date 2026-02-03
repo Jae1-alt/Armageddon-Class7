@@ -50,3 +50,23 @@ resource "aws_ec2_transit_gateway_peering_attachment" "shinjuku_to_liberdade_pee
   peer_transit_gateway_id = aws_ec2_transit_gateway.liberdade_tgw01.id # created in Sao Paulo module/state
   tags = { Name = "shinjuku-to-liberdade-peer01" }
 }
+
+# =============================================================
+# ROUTING INSIDE THE TRANSIT GATEWAYS (The Missing Link)
+# =============================================================
+
+# 1. Tell Tokyo TGW: "To reach São Paulo (10.191.0.0/16), go through the Peering Attachment"
+resource "aws_ec2_transit_gateway_route" "tokyo_tgw_to_sp" {
+
+  destination_cidr_block         = var.networks["sao-paulo"].vpc_cidr
+  transit_gateway_attachment_id  = aws_ec2_transit_gateway_peering_attachment.shinjuku_to_liberdade_peer01.id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway.shinjuku_tgw01.association_default_route_table_id
+}
+
+# 2. Tell São Paulo TGW: "To reach Tokyo (10.190.0.0/16), go through the Peering Attachment"
+resource "aws_ec2_transit_gateway_route" "sp_tgw_to_tokyo" {
+  provider                       = aws.sao-paulo
+  destination_cidr_block         = var.networks["tokyo"].vpc_cidr
+  transit_gateway_attachment_id  = aws_ec2_transit_gateway_peering_attachment.shinjuku_to_liberdade_peer01.id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway.liberdade_tgw01.association_default_route_table_id
+}
