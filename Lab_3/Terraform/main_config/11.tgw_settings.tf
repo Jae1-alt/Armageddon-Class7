@@ -6,14 +6,14 @@
 resource "aws_ec2_transit_gateway" "liberdade_tgw01" {
   provider    = aws.sao-paulo
   description = "liberdade-tgw01 (Sao Paulo spoke)"
-  tags = { Name = "liberdade-tgw01" }
+  tags        = { Name = "liberdade-tgw01" }
 }
 
 # Explanation: Liberdade accepts the corridor from Shinjuku—permissions are explicit, not assumed.
 resource "aws_ec2_transit_gateway_peering_attachment_accepter" "liberdade_accept_peer01" {
   provider                      = aws.sao-paulo
-  transit_gateway_attachment_id  = aws_ec2_transit_gateway_peering_attachment.shinjuku_to_liberdade_peer01.id
-  tags = { Name = "liberdade-accept-peer01" }
+  transit_gateway_attachment_id = aws_ec2_transit_gateway_peering_attachment.shinjuku_to_liberdade_peer01.id
+  tags                          = { Name = "liberdade-accept-peer01" }
 }
 
 # Explanation: Liberdade attaches to its VPC—compute can now reach Tokyo legally, through the controlled corridor.
@@ -22,7 +22,7 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "liberdade_attach_sp_vpc01" {
   transit_gateway_id = aws_ec2_transit_gateway.liberdade_tgw01.id
   vpc_id             = module.vpc_sao_paulo.vpc_id
   subnet_ids         = module.vpc_sao_paulo.private_subnet_id
-  tags = { Name = "liberdade-attach-sp-vpc01" }
+  tags               = { Name = "liberdade-attach-sp-vpc01" }
 }
 
 # =============================================================
@@ -32,7 +32,7 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "liberdade_attach_sp_vpc01" {
 # Explanation: Shinjuku Station is the hub—Tokyo is the data authority.
 resource "aws_ec2_transit_gateway" "shinjuku_tgw01" {
   description = "shinjuku-tgw01 (Tokyo hub)"
-  tags = { Name = "shinjuku-tgw01" }
+  tags        = { Name = "shinjuku-tgw01" }
 }
 
 # Explanation: Shinjuku connects to the Tokyo VPC—this is the gate to the medical records vault.
@@ -40,7 +40,7 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "shinjuku_attach_tokyo_vpc01" 
   transit_gateway_id = aws_ec2_transit_gateway.shinjuku_tgw01.id
   vpc_id             = module.main_vpc.vpc_id
   subnet_ids         = module.main_vpc.private_subnet_id
-  tags = { Name = "shinjuku-attach-tokyo-vpc01" }
+  tags               = { Name = "shinjuku-attach-tokyo-vpc01" }
 }
 
 # Explanation: Shinjuku opens a corridor request to Liberdade—compute may travel, data may not.
@@ -48,7 +48,7 @@ resource "aws_ec2_transit_gateway_peering_attachment" "shinjuku_to_liberdade_pee
   transit_gateway_id      = aws_ec2_transit_gateway.shinjuku_tgw01.id
   peer_region             = "sa-east-1"
   peer_transit_gateway_id = aws_ec2_transit_gateway.liberdade_tgw01.id # created in Sao Paulo module/state
-  tags = { Name = "shinjuku-to-liberdade-peer01" }
+  tags                    = { Name = "shinjuku-to-liberdade-peer01" }
 }
 
 # =============================================================

@@ -52,13 +52,13 @@ resource "aws_cloudwatch_dashboard" "chewbacca_dashboard02" {
 # ############################################
 
 resource "aws_sns_topic" "chewbacca_sns_topic02" {
-      provider = aws.sao-paulo
+  provider = aws.sao-paulo
 
   name = "${var.project_name}-alb-alerts"
 }
 
 resource "aws_cloudwatch_metric_alarm" "chewbacca_alb_5xx_alarm02" {
-    provider = aws.sao-paulo
+  provider = aws.sao-paulo
 
 
   alarm_name          = "${var.project_name}-${var.networks["sao-paulo"].region}-alb-5xx"

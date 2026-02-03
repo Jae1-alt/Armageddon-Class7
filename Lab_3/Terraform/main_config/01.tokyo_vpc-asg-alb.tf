@@ -82,8 +82,8 @@ module "alb_tokyo" {
 
   vpc_id     = module.main_vpc.vpc_id
   subnet_ids = module.main_vpc.public_subnet_id
-  # log_bucket_id = aws_s3_bucket.chewbacca_alb_logs_bucket01[0].id
-  # log_prefix    = "tokyo"
+
+  # --- ALB Identification ---
 
   alb_name           = var.alb_config["tokyo"].alb_name
   internal           = var.alb_config["tokyo"].internal
@@ -99,6 +99,8 @@ module "alb_tokyo" {
   certificate_arn       = aws_acm_certificate_validation.chewbacca_acm_validation01.certificate_arn
   enable_access_logs    = var.alb_config["tokyo"].enable_access_logs
   create_https_listener = var.alb_config["tokyo"].create_https_listener
+  log_bucket_id         = aws_s3_bucket.chewbacca_alb_logs_bucket01[0].id
+  log_prefix            = var.alb_config["tokyo"].log_prefix
 
   listener_secret        = random_password.chewbacca_origin_header_value01.result
   http_header_name       = var.http_header_name

@@ -96,8 +96,8 @@ module "alb_sao_paulo" {
 
   vpc_id     = module.vpc_sao_paulo.vpc_id
   subnet_ids = module.vpc_sao_paulo.public_subnet_id
-  #   log_bucket_id = ""
-  #   log_prefix    = "sao-paulo"
+
+  # --- ALB Identification ---
 
   alb_name           = var.alb_config["sao-paulo"].alb_name
   internal           = var.alb_config["sao-paulo"].internal
@@ -113,7 +113,8 @@ module "alb_sao_paulo" {
   certificate_arn       = aws_acm_certificate_validation.chewbacca_acm_validation01.certificate_arn
   enable_access_logs    = var.alb_config["sao-paulo"].enable_access_logs
   create_https_listener = var.alb_config["sao-paulo"].create_https_listener
-
+  log_bucket_id         = aws_s3_bucket.chewbacca_alb_logs_bucket01_sp[0].id
+  log_prefix            = var.alb_config["sao-paulo"].log_prefix
 
   listener_secret        = random_password.chewbacca_origin_header_value01.result
   http_header_name       = var.http_header_name
