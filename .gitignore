@@ -50,6 +50,6 @@ terraform.rc
 #ignore packages
 *.rpm
 rpm_packages/
-# *.zip
+*.zip
 
 venv/
