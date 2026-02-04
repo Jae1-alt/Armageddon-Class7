@@ -1,0 +1,12 @@
+{
+  "tokyo_rds": [
+    {
+      "region": "ap-northeast-1",
+      "id": "labdb",
+      "az": "ap-northeast-1c",
+      "endpoint": "labdb.cbu8q4q22bhp.ap-northeast-1.rds.amazonaws.com"
+    }
+  ],
+  "saopaulo_rds": [],
+  "assertion": "PASS"
+}

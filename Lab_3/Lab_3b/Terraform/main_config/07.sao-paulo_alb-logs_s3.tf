@@ -7,9 +7,11 @@ data "aws_elb_service_account" "sao-paulo" {
 
 data "aws_caller_identity" "jae_self02" {}
 
-resource "aws_s3_bucket" "chewbacca_alb_logs_bucket01_sp" {
+resource "aws_s3_bucket" "sp_local_vault" {
+  provider = aws.sao-paulo
+
   count  = var.enable_alb_access_logs ? 1 : 0
-  bucket = "${var.project_name}-${var.networks["sao-paulo"].region}-alb-logs-${data.aws_caller_identity.jae_self02.account_id}"
+  bucket = "${var.project_name}-${var.networks["sao-paulo"].region}-alb-logs-${data.aws_caller_identity.jae_self02.account_id}-final"
 
   force_destroy = true
 
@@ -17,8 +19,10 @@ resource "aws_s3_bucket" "chewbacca_alb_logs_bucket01_sp" {
 }
 
 resource "aws_s3_bucket_public_access_block" "chewbacca_alb_logs_pab02" {
+  provider = aws.sao-paulo
+
   count  = var.enable_alb_access_logs ? 1 : 0
-  bucket = aws_s3_bucket.chewbacca_alb_logs_bucket01_sp[0].id
+  bucket = aws_s3_bucket.sp_local_vault[0].id
 
   block_public_acls       = true
   block_public_policy     = true
@@ -27,20 +31,22 @@ resource "aws_s3_bucket_public_access_block" "chewbacca_alb_logs_pab02" {
 }
 
 resource "aws_s3_bucket_policy" "chewbacca_alb_logs_policy02" {
+  provider = aws.sao-paulo
+
   count  = var.enable_alb_access_logs ? 1 : 0
-  bucket = aws_s3_bucket.chewbacca_alb_logs_bucket01_sp[0].id
+  bucket = aws_s3_bucket.sp_local_vault[0].id
 
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Sid    = "AllowELBWriteLogs"
+        Sid    = "AllowSPALBWrite"
         Effect = "Allow"
         Principal = {
           AWS = data.aws_elb_service_account.sao-paulo.arn
         }
         Action   = "s3:PutObject"
-        Resource = "${aws_s3_bucket.chewbacca_alb_logs_bucket01_sp[0].arn}/${var.alb_access_logs_prefix}/AWSLogs/${data.aws_caller_identity.jae_self02.account_id}/*"
+        Resource = "${aws_s3_bucket.sp_local_vault[0].arn}/alb-logs/sao-paulo/*"
       },
       {
         Sid       = "DenyInsecureTransport"
@@ -48,8 +54,8 @@ resource "aws_s3_bucket_policy" "chewbacca_alb_logs_policy02" {
         Principal = "*"
         Action    = "s3:*"
         Resource = [
-          aws_s3_bucket.chewbacca_alb_logs_bucket01_sp[0].arn,
-          "${aws_s3_bucket.chewbacca_alb_logs_bucket01_sp[0].arn}/*"
+          aws_s3_bucket.sp_local_vault[0].arn,
+          "${aws_s3_bucket.sp_local_vault[0].arn}/*"
         ]
         Condition = {
           Bool = { "aws:SecureTransport" = "false" }

@@ -1,0 +1,13 @@
+{
+    "events": [
+        {
+            "logStreamName": "cloudfront_armageddon-waf01_0",
+            "timestamp": 1770226543932,
+            "message": "{\"timestamp\":1770226543932,\"formatVersion\":1,\"webaclId\":\"arn:aws:wafv2:us-east-1:831926592389:global/webacl/armageddon-waf01/786e18a0-0dc7-462e-81ad-63e06e5c7489\",\"terminatingRuleId\":\"AWSManagedRulesCommonRuleSet\",\"terminatingRuleType\":\"MANAGED_RULE_GROUP\",\"action\":\"BLOCK\",\"terminatingRuleMatchDetails\":[{\"conditionType\":\"XSS\",\"location\":\"ALL_QUERY_ARGS\",\"matchedData\":[\"<\",\"script\"],\"matchedFieldName\":\"search\"}],\"httpSourceName\":\"CF\",\"httpSourceId\":\"E20PJPWFPHUMD\",\"ruleGroupList\":[{\"ruleGroupId\":\"AWS#AWSManagedRulesCommonRuleSet\",\"terminatingRule\":{\"ruleId\":\"CrossSiteScripting_QUERYARGUMENTS\",\"action\":\"BLOCK\",\"ruleMatchDetails\":null},\"nonTerminatingMatchingRules\":[],\"excludedRules\":null,\"customerConfig\":null}],\"rateBasedRuleList\":[],\"nonTerminatingMatchingRules\":[],\"requestHeadersInserted\":null,\"responseCodeSent\":null,\"httpRequest\":{\"clientIp\":\"2605:59c0:12b7:2608:c803:90f:ca8:96d0\",\"country\":\"JM\",\"headers\":[{\"name\":\"host\",\"value\":\"d1lxppbi4mjdwj.cloudfront.net\"},{\"name\":\"user-agent\",\"value\":\"curl/8.7.1\"},{\"name\":\"accept\",\"value\":\"*/*\"}],\"uri\":\"/\",\"args\":\"search=<script>alert('hack')</script>\",\"httpVersion\":\"HTTP/2.0\",\"httpMethod\":\"HEAD\",\"requestId\":\"kfGbwzl0gJquQhyJu2rrDfiZixYnZMQm2tXmBUPtHmP5gQbS9dU-4g==\",\"fragment\":\"\",\"scheme\":\"https\",\"host\":\"d1lxppbi4mjdwj.cloudfront.net\"},\"labels\":[{\"name\":\"awswaf:managed:aws:core-rule-set:CrossSiteScripting_QueryArguments\"}],\"ja3Fingerprint\":\"2bab0327a296230f9f6427341e716ea0\",\"ja4Fingerprint\":\"t13d4907h2_0d8feac7bc37_7395dae3b2f3\"}",
+            "ingestionTime": 1770226559627,
+            "eventId": "39477371099903008210647187631224434677595273971442712576"
+        }
+    ],
+    "searchedLogStreams": [],
+    "nextToken": "Bxkq6kVGFtq2y_MoigeqscPOdhXVbhiVtLoAmXb5jCrbohRUxnrZD3grzjHpG9ZSCUPF6FCG8OHokpWd14cXfmTVN05Z3cp4HoKHKxAWg0UVLdNMJv0YLm2OdlqGOhlSuIy-zy_xH1A6Y0roK3lWEMNnzMHi592BWPz5Sl5nK880i61MMmR0FWoLXrVjMw0qC66-8V1R-hH2dYVSjP2l4lbegGhOcg0Gxtasr9bg01NpXV1avbDUB-zVPQ9oW6XXyERmUzIVm3gpKxilzjcOj97heqBkTLQrCxQePtZBMAgTYTiZ_xr2aR5gJTYOwhhzCIMuWL8RePyM0XdTFACBlA"
+}

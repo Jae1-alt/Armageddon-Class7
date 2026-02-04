@@ -55,18 +55,35 @@ resource "aws_ec2_transit_gateway_peering_attachment" "shinjuku_to_liberdade_pee
 # ROUTING INSIDE THE TRANSIT GATEWAYS
 # =============================================================
 
-# Tell Tokyo TGW: "To reach São Paulo (10.191.0.0/16), go through the Peering Attachment"
-resource "aws_ec2_transit_gateway_route" "tokyo_tgw_to_sp" {
+# THE PAUSE BUTTON
+# Forces Terraform to wait 60s for the Peering to stabilize
+# before TGW Routes get created and attached
+resource "time_sleep" "wait_for_tgw_peering" {
+  create_duration = "60s"
 
+  depends_on = [
+    aws_ec2_transit_gateway_peering_attachment_accepter.liberdade_accept_peer01
+  ]
+}
+
+# # Tell Tokyo TGW: "To reach São Paulo (10.191.0.0/16), go through the Peering Attachment"
+resource "aws_ec2_transit_gateway_route" "tokyo_tgw_to_sp" {
   destination_cidr_block         = var.networks["sao-paulo"].vpc_cidr
   transit_gateway_attachment_id  = aws_ec2_transit_gateway_peering_attachment.shinjuku_to_liberdade_peer01.id
   transit_gateway_route_table_id = aws_ec2_transit_gateway.shinjuku_tgw01.association_default_route_table_id
+
+  # DEPEND ON THE TIMER, NOT THE ATTACHMENT
+  depends_on = [time_sleep.wait_for_tgw_peering]
 }
 
-# Tell São Paulo TGW: "To reach Tokyo (10.190.0.0/16), go through the Peering Attachment"
+# # Tell São Paulo TGW: "To reach Tokyo (10.190.0.0/16), go through the Peering Attachment"
 resource "aws_ec2_transit_gateway_route" "sp_tgw_to_tokyo" {
-  provider                       = aws.sao-paulo
+  provider = aws.sao-paulo
+
   destination_cidr_block         = var.networks["tokyo"].vpc_cidr
   transit_gateway_attachment_id  = aws_ec2_transit_gateway_peering_attachment.shinjuku_to_liberdade_peer01.id
   transit_gateway_route_table_id = aws_ec2_transit_gateway.liberdade_tgw01.association_default_route_table_id
+
+  # DEPEND ON THE TIMER
+  depends_on = [time_sleep.wait_for_tgw_peering]
 }

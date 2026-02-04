@@ -5,7 +5,7 @@ resource "random_password" "chewbacca_origin_header_value01" {
 }
 
 
-# Explanation: CloudFront is the only public doorway — Chewbacca stands behind it with private infrastructure.
+# CloudFront is the only public doorway — Chewbacca stands behind it with private infrastructure.
 resource "aws_cloudfront_distribution" "chewbacca_cf01" {
   enabled         = true
   is_ipv6_enabled = true
@@ -22,7 +22,7 @@ resource "aws_cloudfront_distribution" "chewbacca_cf01" {
       origin_ssl_protocols   = ["TLSv1.2"]
     }
 
-    # Explanation: CloudFront whispers the secret growl — the ALB only trusts this.
+    # CloudFront whispers the secret growl — the ALB only trusts this.
     custom_header {
       name  = var.http_header_name
       value = random_password.chewbacca_origin_header_value01.result
@@ -30,7 +30,7 @@ resource "aws_cloudfront_distribution" "chewbacca_cf01" {
   }
 
   # Default cache adjustment--------------------------------------------------------------------------------------
-  # Explanation: Default behavior is conservative—Chewbacca assumes dynamic until proven static.
+  # Default behavior is conservative—Chewbacca assumes dynamic until proven static.
   default_cache_behavior {
     target_origin_id       = "GlobalSmartOrigin"
     viewer_protocol_policy = "redirect-to-https"
@@ -43,7 +43,7 @@ resource "aws_cloudfront_distribution" "chewbacca_cf01" {
   }
 
   #---------------------------------------------------------------------------------------------------------------
-  # Explanation: Static behavior is the speed lane—Chewbacca caches it hard for performance.
+  # Static behavior is the speed lane—Chewbacca caches it hard for performance.
   ordered_cache_behavior {
     path_pattern           = "/static/*"
     target_origin_id       = "GlobalSmartOrigin"
@@ -58,7 +58,7 @@ resource "aws_cloudfront_distribution" "chewbacca_cf01" {
   }
 
   #---------------------------------------------------------------------------------------------------------------
-  # Explanation: Public feed is cacheable—but only if the origin explicitly says so. Chewbacca demands consent.
+  # Public feed is cacheable—but only if the origin explicitly says so. Chewbacca demands consent.
   ordered_cache_behavior {
     path_pattern           = "/api/public-feed"
     target_origin_id       = "GlobalSmartOrigin"
@@ -75,7 +75,7 @@ resource "aws_cloudfront_distribution" "chewbacca_cf01" {
   }
 
   #---------------------------------------------------------------------------------------------------------------
-  # Explanation: Everything else under /api is dangerous by default—Chewbacca disables caching until proven safe.
+  # Everything else under /api is dangerous by default—Chewbacca disables caching until proven safe.
   ordered_cache_behavior {
     path_pattern           = "/api/*"
     target_origin_id       = "GlobalSmartOrigin"
@@ -122,17 +122,17 @@ resource "aws_cloudfront_distribution" "chewbacca_cf01" {
 # Lab 2B-Honors - Origin Driven Caching (Managed Policies)
 ##############################################################
 
-# Explanation: Chewbacca uses AWS-managed policies—battle-tested configs so students learn the real names.
+# Chewbacca uses AWS-managed policies—battle-tested configs so students learn the real names.
 data "aws_cloudfront_cache_policy" "chewbacca_use_origin_cache_headers01" {
   name = "UseOriginCacheControlHeaders"
 }
 
-# Explanation: Same idea, but includes query strings in the cache key when your API truly varies by them.
+# Same idea, but includes query strings in the cache key when your API truly varies by them.
 data "aws_cloudfront_cache_policy" "chewbacca_use_origin_cache_headers_qs01" {
   name = "UseOriginCacheControlHeaders-QueryStrings"
 }
 
-# Explanation: Origin request policies let us forward needed stuff without polluting the cache key.
+# Origin request policies let us forward needed stuff without polluting the cache key.
 # (Origin request policies are separate from cache policies.) :contentReference[oaicite:6]{index=6}
 data "aws_cloudfront_origin_request_policy" "chewbacca_orp_all_viewer01" {
   name = "Managed-AllViewer"
