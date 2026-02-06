@@ -31,11 +31,6 @@ provider "aws" {
 }
 
 provider "aws" {
-  alias  = "tokyo_force"
-  region = "ap-northeast-1"
-}
-
-provider "aws" {
   alias  = "us_e_1"
   region = "us-east-1" # N. Virgina fo resources exclusive to this region.
 }
