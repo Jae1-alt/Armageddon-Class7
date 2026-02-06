@@ -29,12 +29,13 @@ module "vpc_sao_paulo" {
 resource "aws_route" "liberdade_to_tokyo_route01" {
   provider               = aws.sao-paulo
   route_table_id         = module.vpc_sao_paulo.private_rt_id
-  destination_cidr_block = module.main_vpc.vpc_cidr # Tokyo VPC CIDR (students supply)
+  destination_cidr_block = data.terraform_remote_state.tokyo.outputs.vpc_cidr # Tokyo VPC CIDR (students supply)
   transit_gateway_id     = aws_ec2_transit_gateway.liberdade_tgw01.id
 }
 
+
 ##########################################################################
-# Sai-Paulo - ASG
+# Sao-Paulo - ASG
 ##########################################################################
 module "compute_sao_paulo" {
   source = "../modules/asg_launch_template"
@@ -110,13 +111,13 @@ module "alb_sao_paulo" {
   # --- Listeners & Logs ---
   http_port             = var.alb_config["sao-paulo"].http_port
   https_port            = var.alb_config["sao-paulo"].https_port
-  certificate_arn       = aws_acm_certificate_validation.chewbacca_acm_validation01.certificate_arn
+  certificate_arn       = data.terraform_remote_state.tokyo.outputs.validated_certificate_arn
   enable_access_logs    = var.alb_config["sao-paulo"].enable_access_logs
   create_https_listener = var.alb_config["sao-paulo"].create_https_listener
-  log_bucket_id         = aws_s3_bucket.chewbacca_alb_logs_bucket01_sp[0].id
+  log_bucket_id         = aws_s3_bucket.sp_local_vault[0].id
   log_prefix            = var.alb_config["sao-paulo"].log_prefix
 
-  listener_secret        = random_password.chewbacca_origin_header_value01.result
+  listener_secret        = data.terraform_remote_state.tokyo.outputs.random_header_password
   http_header_name       = var.http_header_name
   enable_secure_listener = var.enable_secure_listener
 }

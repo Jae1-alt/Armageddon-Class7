@@ -25,7 +25,7 @@ resource "aws_cloudwatch_metric_alarm" "db_alarms" {
   statistic           = each.value.statistic
   threshold           = each.value.threshold
   alarm_description   = each.value.description
-  treat_missing_data  = "notBreaching" # added so that no added errors ais read as OK
+  treat_missing_data  = "notBreaching" # added so that no added errors is read as OK
 
   alarm_actions = [aws_sns_topic.db_alerts.arn]
 

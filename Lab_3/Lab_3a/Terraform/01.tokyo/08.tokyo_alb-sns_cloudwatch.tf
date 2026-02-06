@@ -3,7 +3,7 @@
 ############################################
 
 resource "aws_cloudwatch_dashboard" "chewbacca_dashboard01" {
-  dashboard_name = "${var.project_name}-dashboard01"
+  dashboard_name = "${var.project_name}-${var.networks["tokyo"].region}-dashboard01"
 
   # The dashboard_body is a JSON string. We use jsonencode to keep it clean.
   dashboard_body = jsonencode({

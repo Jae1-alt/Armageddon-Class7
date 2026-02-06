@@ -21,7 +21,7 @@ resource "aws_secretsmanager_secret_version" "imported_version-sao-paulo" {
 
   secret_string = jsonencode({
     username = var.db_username
-    password = random_password.password.result
+    password = data.terraform_remote_state.tokyo.outputs.db_random_password
   })
 }
 
@@ -44,7 +44,8 @@ resource "aws_ssm_parameter" "db_endpoint-sao-paulo" {
   name        = "/lab/db/endpoint"
   description = "Dynamic RDS Endpoint for MySQL Lab"
   type        = "String"
-  value       = aws_db_instance.mysql_db.address
+  value       = data.terraform_remote_state.tokyo.outputs.db_endpoint
+
 
   tags = var.secret_tag
 }

@@ -22,7 +22,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "ap-northeast-1" # default region
+  region = "sa-east-1" # default region
 }
 
 provider "aws" {

@@ -2,7 +2,7 @@
 # CloudWatch Dashboard for ALB: The Cockpit HUD
 ############################################
 
-resource "aws_cloudwatch_dashboard" "chewbacca_dashboard02" {
+resource "aws_cloudwatch_dashboard" "saopaulo_dashboard02" {
   provider = aws.sao-paulo
 
   dashboard_name = "${var.project_name}-${var.networks["sao-paulo"].region}-dashboard01"
@@ -24,7 +24,7 @@ resource "aws_cloudwatch_dashboard" "chewbacca_dashboard02" {
           period = 300
           stat   = "Sum"
           region = var.aws_region
-          title  = "Chewbacca ALB: Requests vs 5XX Errors"
+          title  = "saopaulo ALB: Requests vs 5XX Errors"
         }
       },
       {
@@ -40,7 +40,7 @@ resource "aws_cloudwatch_dashboard" "chewbacca_dashboard02" {
           period = 300
           stat   = "Average"
           region = var.aws_region
-          title  = "Chewbacca ALB: Target Response Time (Latency)"
+          title  = "saopaulo ALB: Target Response Time (Latency)"
         }
       }
     ]
@@ -51,13 +51,13 @@ resource "aws_cloudwatch_dashboard" "chewbacca_dashboard02" {
 # SNS Topic for ALB Alerts
 # ############################################
 
-resource "aws_sns_topic" "chewbacca_sns_topic02" {
+resource "aws_sns_topic" "saopaulo_sns_topic02" {
   provider = aws.sao-paulo
 
   name = "${var.project_name}-alb-alerts"
 }
 
-resource "aws_cloudwatch_metric_alarm" "chewbacca_alb_5xx_alarm02" {
+resource "aws_cloudwatch_metric_alarm" "saopaulo_alb_5xx_alarm02" {
   provider = aws.sao-paulo
 
 
@@ -76,5 +76,5 @@ resource "aws_cloudwatch_metric_alarm" "chewbacca_alb_5xx_alarm02" {
     LoadBalancer = module.alb_sao_paulo.alb_arn_suffix
   }
 
-  alarm_actions = [aws_sns_topic.chewbacca_sns_topic02.arn]
+  alarm_actions = [aws_sns_topic.saopaulo_sns_topic02.arn]
 }

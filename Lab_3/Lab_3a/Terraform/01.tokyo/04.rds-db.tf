@@ -55,16 +55,6 @@ resource "aws_vpc_security_group_ingress_rule" "rds_ingress_from_ec2" {
   description = "Inbound only from EC2 Web Tier"
 }
 
-resource "aws_security_group_rule" "shinjuku_rds_ingress_from_liberdade01" {
-  type              = "ingress"
-  security_group_id = aws_security_group.rds_sg.id
-  from_port         = 3306
-  to_port           = 3306
-  protocol          = "tcp"
-
-  cidr_blocks = [module.vpc_sao_paulo.vpc_cidr] # Sao Paulo VPC CIDR (students supply)
-}
-
 resource "aws_vpc_security_group_egress_rule" "rds_egress_all" {
   security_group_id = aws_security_group.rds_sg.id
 

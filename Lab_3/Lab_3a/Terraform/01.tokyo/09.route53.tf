@@ -1,7 +1,3 @@
-# Instead of creating a zone, we look up the existing one by ID
-data "aws_route53_zone" "selected" {
-  zone_id = var.route53_hosted_zone_id
-}
 
 ########################################################################
 # Route53 Internal Routing Logic
@@ -31,30 +27,6 @@ resource "aws_route53_record" "origin_tokyo" {
     region = "ap-northeast-1"
   }
 }
-
-# --- Route 53 Record: São Paulo Latency Target ---
-resource "aws_route53_record" "origin_saopaulo" {
-  zone_id = data.aws_route53_zone.selected.zone_id
-
-  # This creates the "One Name, Two Destinations" setup.
-  name = "origin.${var.domain_name}"
-  type = "A"
-
-  # Unique ID for this specific path
-  set_identifier = "SaoPaulo-Latency-Target"
-
-  alias {
-    name                   = module.alb_sao_paulo.alb_dns_name # Pointing to SP ALB
-    zone_id                = module.alb_sao_paulo.alb_zone_id
-    evaluate_target_health = true
-  }
-
-  # "Use this record if sa-east-1 is the fastest region"
-  latency_routing_policy {
-    region = "sa-east-1"
-  }
-}
-
 
 ########################################################################
 # Route53 Record association for ALB

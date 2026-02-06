@@ -1,11 +1,11 @@
 # Random password to be used by CF, Route 53 and ALBs
-resource "random_password" "chewbacca_origin_header_value01" {
+resource "random_password" "origin_header_value01" {
   length  = 32
   special = false
 }
 
 
-# CloudFront is the only public doorway — Chewbacca stands behind it with private infrastructure.
+# Explanation: CloudFront is the only public doorway — Chewbacca stands behind it with private infrastructure.
 resource "aws_cloudfront_distribution" "chewbacca_cf01" {
   enabled         = true
   is_ipv6_enabled = true
@@ -22,15 +22,15 @@ resource "aws_cloudfront_distribution" "chewbacca_cf01" {
       origin_ssl_protocols   = ["TLSv1.2"]
     }
 
-    # CloudFront whispers the secret growl — the ALB only trusts this.
+    # Explanation: CloudFront whispers the secret growl — the ALB only trusts this.
     custom_header {
       name  = var.http_header_name
-      value = random_password.chewbacca_origin_header_value01.result
+      value = random_password.origin_header_value01.result
     }
   }
 
   # Default cache adjustment--------------------------------------------------------------------------------------
-  # Default behavior is conservative—Chewbacca assumes dynamic until proven static.
+  # Explanation: Default behavior is conservative—Chewbacca assumes dynamic until proven static.
   default_cache_behavior {
     target_origin_id       = "GlobalSmartOrigin"
     viewer_protocol_policy = "redirect-to-https"
@@ -43,7 +43,7 @@ resource "aws_cloudfront_distribution" "chewbacca_cf01" {
   }
 
   #---------------------------------------------------------------------------------------------------------------
-  # Static behavior is the speed lane—Chewbacca caches it hard for performance.
+  # Explanation: Static behavior is the speed lane—Chewbacca caches it hard for performance.
   ordered_cache_behavior {
     path_pattern           = "/static/*"
     target_origin_id       = "GlobalSmartOrigin"
@@ -58,7 +58,7 @@ resource "aws_cloudfront_distribution" "chewbacca_cf01" {
   }
 
   #---------------------------------------------------------------------------------------------------------------
-  # Public feed is cacheable—but only if the origin explicitly says so. Chewbacca demands consent.
+  # Explanation: Public feed is cacheable—but only if the origin explicitly says so. Chewbacca demands consent.
   ordered_cache_behavior {
     path_pattern           = "/api/public-feed"
     target_origin_id       = "GlobalSmartOrigin"
@@ -75,7 +75,7 @@ resource "aws_cloudfront_distribution" "chewbacca_cf01" {
   }
 
   #---------------------------------------------------------------------------------------------------------------
-  # Everything else under /api is dangerous by default—Chewbacca disables caching until proven safe.
+  # Explanation: Everything else under /api is dangerous by default—Chewbacca disables caching until proven safe.
   ordered_cache_behavior {
     path_pattern           = "/api/*"
     target_origin_id       = "GlobalSmartOrigin"
@@ -89,7 +89,7 @@ resource "aws_cloudfront_distribution" "chewbacca_cf01" {
     origin_request_policy_id = data.aws_cloudfront_origin_request_policy.chewbacca_orp_all_viewer01.id
   }
 
-  #This actually does the WAF association — now WAF moved to CloudFront, this 
+  #This does the WAF association 
   web_acl_id = aws_wafv2_web_acl.chewbacca_waf01[0].arn
 
   # TODO: students set aliases for chewbacca-growl.com and app.chewbacca-growl.com
@@ -116,35 +116,19 @@ resource "aws_cloudfront_distribution" "chewbacca_cf01" {
   lifecycle {
     create_before_destroy = true
   }
-}
 
-##############################################################
-# Lab 2B-Honors - Origin Driven Caching (Managed Policies)
-##############################################################
+  # ---------------------------------------------------------
+  # EDGE EVIDENCE LOGGING CONFIGURATION
+  # ---------------------------------------------------------
+  logging_config {
+    include_cookies = false
 
-# Chewbacca uses AWS-managed policies—battle-tested configs so students learn the real names.
-data "aws_cloudfront_cache_policy" "chewbacca_use_origin_cache_headers01" {
-  name = "UseOriginCacheControlHeaders"
-}
+    # CloudFront requires the .s3.amazonaws.com suffix
+    bucket = "${aws_s3_bucket.audit_vault.id}.s3.amazonaws.com"
 
-# Same idea, but includes query strings in the cache key when your API truly varies by them.
-data "aws_cloudfront_cache_policy" "chewbacca_use_origin_cache_headers_qs01" {
-  name = "UseOriginCacheControlHeaders-QueryStrings"
-}
-
-# Origin request policies let us forward needed stuff without polluting the cache key.
-# (Origin request policies are separate from cache policies.) :contentReference[oaicite:6]{index=6}
-data "aws_cloudfront_origin_request_policy" "chewbacca_orp_all_viewer01" {
-  name = "Managed-AllViewer"
-}
-
-data "aws_cloudfront_origin_request_policy" "chewbacca_orp_all_viewer_except_host01" {
-  name = "Managed-AllViewerExceptHostHeader"
-}
-
-# The "No Cache" Policy
-data "aws_cloudfront_cache_policy" "caching_disabled" {
-  name = "Managed-CachingDisabled"
+    # The mandatory requirement for the Malgus scripts
+    prefix = "Chwebacca-logs/"
+  }
 }
 
 #################################################
@@ -173,7 +157,6 @@ resource "aws_cloudfront_cache_policy" "chewbacca_cache_static01" {
     enable_accept_encoding_brotli = true
   }
 }
-
 
 ##################################################################
 # Origin request policy for static (minimal)
