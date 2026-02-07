@@ -32,7 +32,6 @@ resource "aws_security_group_rule" "chewbacca_ec2_ingress_from_alb01" {
   source_security_group_id = aws_security_group.chewbacca_alb_sg01.id
 }
 
-
 # Application Load Balancer
 resource "aws_lb" "chewbacca_alb01" {
   name               = "${var.project_name}-alb01"

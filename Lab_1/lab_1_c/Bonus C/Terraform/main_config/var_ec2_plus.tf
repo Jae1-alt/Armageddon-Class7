@@ -151,18 +151,3 @@ variable "key_name" {
 # if no key creation is needed no default key name is made; this allows the using of pre-exisiting keys
 
 ##########################################################################################
-# tagging variables and locals
-# variable "tags" {
-#   description = "Custom Tag values for all resouce ceated."
-#   type        = map(string)
-
-#   default = {}
-# }
-
-# locals {
-#   common_tags = {
-#     Environment = var.environment
-#     ManagedBy   = "Terraform"
-#     Owner       = var.owner
-#   }
-# }

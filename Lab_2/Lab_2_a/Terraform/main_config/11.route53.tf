@@ -105,6 +105,7 @@ resource "aws_route53_record" "chewbacca_cf_validation" {
 # Wait for the CloudFront Cert to be Valid
 resource "aws_acm_certificate_validation" "chewbacca_cf_validation01" {
   provider                = aws.us_e_1
+  
   certificate_arn         = aws_acm_certificate.chewbacca_cf_cert01.arn
   validation_record_fqdns = [for r in aws_route53_record.chewbacca_cf_validation : r.fqdn]
 }

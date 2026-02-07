@@ -3,11 +3,6 @@ output "vpc_id" {
   value       = module.main_vpc.vpc_id
 }
 
-# output "az_list" {
-#   description = "A list of available AZ's for the region"
-#   value       = [for az in module.main_vpc.available_azs : "${az} is available."]
-# }
-
 # Map of Service Names to Endpoint IDs
 output "vpc_interface_endpoint_ids" {
   description = "IDs of the created Interface Endpoints"
@@ -30,13 +25,6 @@ output "ssm_login_helper" {
   description = "Run this command to log into the private instance"
   value       = "aws ssm start-session --target ${module.ec2_plus.instance_ids[0]}"
 }
-
-# output "instanc_id" {
-#   description = "Instace ID(s) for created instances"
-#   value       = [module.ec2_plus.instance_ids]
-# }
-
-#-----
 
 ############################################
 

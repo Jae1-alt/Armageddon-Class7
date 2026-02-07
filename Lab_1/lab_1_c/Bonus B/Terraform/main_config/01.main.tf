@@ -45,6 +45,7 @@ module "ec2_plus" {
   subnet_id         = module.main_vpc.private_subnet_id[2]
   public_ip_address = var.public_ip_address
 
+  # # For this lab this shows that  
   # Security Groups
   # create_sg                     = var.create_sg
   # sg_name                       = var.sg_name
