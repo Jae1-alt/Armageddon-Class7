@@ -25,40 +25,40 @@ resource "aws_cloudfront_cache_policy" "chewbacca_cache_static01" {
   }
 }
 
-# ############################################################
-# #2) Cache policy for API (safe default: caching disabled)
-# ##############################################################
+############################################################
+#2) Cache policy for API (safe default: caching disabled)
+##############################################################
 
-# # Explanation: APIs are dangerous to cache by accident—Chewbacca disables caching until proven safe.
-# # resource "aws_cloudfront_cache_policy" "chewbacca_cache_api_disabled01" {
-# #   name        = "${var.project_name}-cache-api-disabled01"
-# #   comment     = "Disable caching for /api/* by default"
-# #   default_ttl = 0
-# #   max_ttl     = 0
-# #   min_ttl     = 0
+# Explanation: APIs are dangerous to cache by accident—Chewbacca disables caching until proven safe.
+# resource "aws_cloudfront_cache_policy" "chewbacca_cache_api_disabled01" {
+#   name        = "${var.project_name}-cache-api-disabled01"
+#   comment     = "Disable caching for /api/* by default"
+#   default_ttl = 0
+#   max_ttl     = 0
+#   min_ttl     = 0
 
-# #   parameters_in_cache_key_and_forwarded_to_origin {
-# #     cookies_config { cookie_behavior = "all" }
-# #     query_strings_config { query_string_behavior = "all" }
+#   parameters_in_cache_key_and_forwarded_to_origin {
+#     cookies_config { cookie_behavior = "all" }
+#     query_strings_config { query_string_behavior = "all" }
 
-# #     # Explanation: Forward auth-related headers to origin, but DO NOT include random headers in cache key.
-# #     # Students: choose only required headers (Authorization is the classic case).
-# #     headers_config {
-# #       header_behavior = "whitelist"
-# #       headers {
-# #         items = ["Authorization", "Host"]
-# #       }
-# #     }
+#     # Explanation: Forward auth-related headers to origin, but DO NOT include random headers in cache key.
+#     # Students: choose only required headers (Authorization is the classic case).
+#     headers_config {
+#       header_behavior = "whitelist"
+#       headers {
+#         items = ["Authorization", "Host"]
+#       }
+#     }
 
-# #     enable_accept_encoding_gzip   = true
-# #     enable_accept_encoding_brotli = true
-# #   }
-# # }
-
-# # The "No Cache" Policy
-# data "aws_cloudfront_cache_policy" "caching_disabled" {
-#   name = "Managed-CachingDisabled"
+#     enable_accept_encoding_gzip   = true
+#     enable_accept_encoding_brotli = true
+#   }
 # }
+
+# The "No Cache" Policy
+data "aws_cloudfront_cache_policy" "caching_disabled" {
+  name = "Managed-CachingDisabled"
+}
 
 # ############################################################
 # #3) Origin request policy for API (forward what origin needs)
