@@ -56,9 +56,9 @@ resource "aws_cloudfront_cache_policy" "chewbacca_cache_static01" {
 # }
 
 # The "No Cache" Policy
-data "aws_cloudfront_cache_policy" "caching_disabled" {
-  name = "Managed-CachingDisabled"
-}
+# data "aws_cloudfront_cache_policy" "caching_disabled" {
+#   name = "Managed-CachingDisabled"
+# }
 
 # ############################################################
 # #3) Origin request policy for API (forward what origin needs)
