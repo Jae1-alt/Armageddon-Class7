@@ -1,7 +1,7 @@
 
 # Lab 3a: Secure Cross-Region Medical Architecture (APPI-Compliant)
 
-## Executive Summary
+## Project Summary
 
 This project implements a multi-region, compliance-driven infrastructure designed for a Japanese healthcare provider. To strictly adhere to Japan’s **Act on the Protection of Personal Information (APPI)**, which mandates that all Patient Health Information (PHI) must physically reside within Japan, this architecture establishes a "Data Authority" in Tokyo and a stateless "Compute Extension" in São Paulo.
 
