@@ -1,5 +1,5 @@
 
-### 🏗️ Infrastructure Diagram (Lab 1.a)
+###  Infrastructure Diagram (Lab 1.a)
 
 ![](attachment/acd485735477eb686449707aa486a701.png)
 
@@ -18,7 +18,7 @@ The diagram above illustrates the final infrastructure state upon successful com
 
 ---
 
-## ⚙️ Process Optimizations & Adjustments
+##  Process Optimizations & Adjustments
 
 While the original deployment walkthrough was functional, I have implemented several strategic adjustments to streamline the workflow, enhance security boundaries, and ensure compatibility with modern Amazon Machine Images (AMIs).
 
@@ -32,12 +32,12 @@ In this workflow, I provision the **EC2 Instance** _before_ creating the RDS Dat
 
 - **The Benefit:** This sequence unlocks the _"Connect to an EC2 compute resource"_ feature within the RDS console setup. This automates the network bridging between the compute and data tiers.
     
-- **⚠️ Important Trade-off:** Using this automated feature creates two new Security Groups automatically.
+- ** Important Trade-off:** Using this automated feature creates two new Security Groups automatically.
     
     > **Note:** If you have already manually created your Security Groups (as done in this lab), using this feature will result in **redundant/duplicate Security Groups**. Use this feature only if you want AWS to handle the security group creation for you.
     
 
-⚠️ The "Cached Failure" Risk:
+ The "Cached Failure" Risk:
 
 If the EC2 instance launches before the RDS infrastructure is fully ready, the application will attempt to connect to the database, fail, and cache this failed state in memory. Even if you rectify the underlying resource issues later, visiting http://<public_ip>/init may still fail because the running application process is stuck in its previous "disconnected" state.
 
@@ -102,7 +102,7 @@ dnf install mariadb105 -y
 
 ---
 
-## 🔧 Troubleshooting: Manual Database Initialization
+##  Troubleshooting: Manual Database Initialization
 
 If for some reason the application's auto-initialization at `http://<public_ip>/init` fails to create the necessary tables, you must manually initialize the database via the Command Line Interface (CLI).
 

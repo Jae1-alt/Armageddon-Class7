@@ -1,7 +1,7 @@
 
 # README: Lab 1b - Incident Response & Operational Hardening
 
-## 📌 Overview
+##  Overview
 
 This repository contains the documentation and deliverables for **Lab 1b**, focusing on transitioning a monolithic database configuration into a tiered, secure architecture and executing a professional incident response drill.
 
@@ -11,7 +11,7 @@ This repository contains the documentation and deliverables for **Lab 1b**, focu
 
 ---
 
-## 📂 Documentation Structure
+##  Documentation Structure
 
 The documentation is organized into four distinct sections:
 
@@ -47,7 +47,7 @@ A critical look at the operational maturity of the system.
 
 ---
 
-## 🛠 Key Skills Demonstrated
+##  Key Skills Demonstrated
 
 - **Observability:** Configuring CloudWatch Alarms and Custom Metrics.
     
@@ -60,7 +60,7 @@ A critical look at the operational maturity of the system.
 
 ---
 
-## 🚀 How to Navigate
+##  How to Navigate
 
 - Detailed screenshots of the AWS Console and CLI outputs are embedded within each section.
 	
