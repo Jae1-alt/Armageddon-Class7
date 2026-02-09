@@ -26,6 +26,12 @@ output "private_subnet_id" {
     for subnet in aws_subnet.private_subnets : subnet.id
   ]
 }
+output "isolated_subnet_id" {
+  description = "id for created isolated subnets"
+  value = [
+    for subnet in aws_subnet.isolated_subnets : subnet.id
+  ]
+}
 
 output "public_subnet_cidr" {
   description = "CIDR for created public subnets"
@@ -41,6 +47,13 @@ output "private_subnet_cidr" {
   ]
 }
 
+output "isolated_subnet_cidr" {
+  description = "CIDR for created isolated subnets"
+  value = [
+    for subnet in aws_subnet.isolated_subnets : subnet.cidr_block
+  ]
+}
+
 output "nat_eip_id" {
   description = "The id for the created eip."
   value       = one(aws_eip.nat[*].id)
@@ -52,13 +65,18 @@ output "public_rt_id" {
 }
 
 output "private_rt_id" {
-  description = "The id for the created private isolated route table."
+  description = "The id for the created private route table."
   value       = one(aws_route_table.private[*].id)
 }
 
 output "private_nat_rt_id" {
-  description = "The id for the created private route table."
+  description = "The id for the created private route table with NAT access."
   value       = one(aws_route_table.private_nat_access[*].id)
+}
+
+output "isolated_rt_id" {
+  description = "The id for the created isolated route table."
+  value       = one(aws_route_table.isolated[*].id)
 }
 
 output "available_azs" {

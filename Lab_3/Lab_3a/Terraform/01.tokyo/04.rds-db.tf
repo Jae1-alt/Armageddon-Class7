@@ -2,7 +2,7 @@ resource "aws_db_subnet_group" "rds_private_group" {
   name        = "lab-rds-private-subnet-group"
   description = "RDS Subnet Group for lab using private subnets"
 
-  subnet_ids = [for id in module.main_vpc.private_subnet_id : id]
+  subnet_ids = [for id in module.main_vpc.isolated_subnet_id : id]
 
   tags = merge(var.tags, { Name = "Lab DB Subnet Group" })
 }

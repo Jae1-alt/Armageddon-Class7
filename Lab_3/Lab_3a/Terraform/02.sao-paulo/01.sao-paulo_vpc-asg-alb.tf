@@ -18,8 +18,10 @@ module "vpc_sao_paulo" {
   dns_support  = var.networks["sao-paulo"].dns_support
   dns_hostname = var.networks["sao-paulo"].dns_hostname
 
-  public_subnets_config  = var.networks["sao-paulo"].public_subnets_config
-  private_subnets_config = var.networks["sao-paulo"].private_subnets_config
+  public_subnets_config   = var.networks["sao-paulo"].public_subnets_config
+  private_subnets_config  = var.networks["sao-paulo"].private_subnets_config
+  isolated_subnets_config = var.networks["sao-paulo"].isolated_subnets_config
+
 
   enable_igw         = var.networks["sao-paulo"].enable_igw
   enable_nat_gateway = var.networks["sao-paulo"].enable_nat_gateway

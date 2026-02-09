@@ -13,7 +13,6 @@ variable "owner" {
 
 ##############################################
 # Info for VPC and Subnet
-
 variable "vpc_name" {
   description = "Name for the VPC"
   type        = string
@@ -47,7 +46,7 @@ variable "public_subnets_config" {
   }))
 
   default = {
-    "1st_subnet" = {
+    "1st_public_subnet" = {
       az_index  = 0
       newbits   = 8
       netnum    = 1
@@ -56,6 +55,7 @@ variable "public_subnets_config" {
   }
 }
 
+# These subnets can become completely private/ isolated based on NAT GW existance. 
 variable "private_subnets_config" {
   description = "Configuration details for subnets, each object is a sbunet; some values will be used with the cidrsubnet function."
   type = map(object({     # the name of the object will be the name of the subnet.
@@ -66,11 +66,31 @@ variable "private_subnets_config" {
   }))
 
   default = {
-    "1st_subnet" = {
+    "1st_private_subnet" = {
       az_index     = 0
       newbits      = 8
       netnum       = 11
       needs_nat_gw = false
+    }
+  }
+}
+
+# These subnets are completely isolated, no NAT GW.
+variable "isolated_subnets_config" {
+  description = "Configuration details for subnets, each object is a sbunet; some values will be used with the cidrsubnet function."
+  type = map(object({    # the name of the object will be the name of the subnet.
+    az_index    = number # index number for desired AZ from list of available AZ's
+    newbits     = number # number to add to VPC CIDR Mask to create subnet mask
+    netnum      = number # Value to create a new subnet network address, a subnet of VPC CIDR Mask 
+    isolated_on = bool
+  }))
+
+  default = {
+    "1st_isolated_subnet" = {
+      az_index    = 0
+      newbits     = 8
+      netnum      = 100
+      isolated_on = false
     }
   }
 }

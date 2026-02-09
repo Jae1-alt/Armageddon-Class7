@@ -3,7 +3,7 @@
 variable "environment" {
   description = "Environment for all resources."
   type        = string
-  default     = "prod-lab3"
+  default     = "tokyo-prod-3"
 }
 
 variable "owner" {
@@ -43,6 +43,13 @@ variable "networks" {
       newbits      = number
       netnum       = number
       needs_nat_gw = bool
+    }))
+
+    isolated_subnets_config = map(object({
+      az_index    = number
+      newbits     = number
+      netnum      = number
+      isolated_on = bool
     }))
   }))
 }

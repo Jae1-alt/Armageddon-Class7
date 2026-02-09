@@ -54,6 +54,21 @@ resource "aws_subnet" "private_subnets" {
   )
 }
 
+resource "aws_subnet" "isolated_subnets" {
+  for_each = var.isolated_subnets_config
+
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = cidrsubnet(var.vpc_cidr, each.value.newbits, each.value.netnum)
+  availability_zone = data.aws_availability_zones.available.names[each.value.az_index]
+
+  tags = merge(
+    var.tags,
+    local.common_tags,
+    {
+      Name = "${var.vpc_name}-${each.key}"
+    },
+  )
+}
 
 resource "aws_eip" "nat" {
 
@@ -128,12 +143,10 @@ resource "aws_route_table" "private" {
 
   vpc_id = aws_vpc.main.id
 
-  # This table now only allows internal VPC traffic.
-
   tags = merge(
     var.tags,
     local.common_tags,
-    { Name = "${var.vpc_name}-isolated-rt" } # Renamed for clarity
+    { Name = "${var.vpc_name}-private-rt" }
   )
 }
 
@@ -151,6 +164,20 @@ resource "aws_route_table" "private_nat_access" {
     var.tags,
     local.common_tags,
     { Name = "${var.vpc_name}-private-nat-rt" }
+  )
+}
+
+resource "aws_route_table" "isolated" {
+  count = length(var.isolated_subnets_config) > 0 ? 1 : 0
+
+  vpc_id = aws_vpc.main.id
+
+  # This table now only allows internal VPC traffic.
+
+  tags = merge(
+    var.tags,
+    local.common_tags,
+    { Name = "${var.vpc_name}-isolated-rt" }
   )
 }
 
@@ -179,6 +206,16 @@ resource "aws_route_table_association" "private_rt_association" {
 
   subnet_id      = aws_subnet.private_subnets[each.key].id
   route_table_id = aws_route_table.private[0].id
+}
+
+resource "aws_route_table_association" "isolated_rt_association" {
+  for_each = {
+    for key, value in var.isolated_subnets_config : key => value
+    if value.isolated_on == true
+  }
+
+  subnet_id      = aws_subnet.isolated_subnets[each.key].id
+  route_table_id = aws_route_table.isolated[0].id
 }
 
 # AWS automatically creates a route table and routetable association for subnets without both, \

@@ -13,7 +13,7 @@ resource "aws_ec2_transit_gateway" "shinjuku_tgw01" {
 resource "aws_ec2_transit_gateway_vpc_attachment" "shinjuku_attach_tokyo_vpc01" {
   transit_gateway_id = aws_ec2_transit_gateway.shinjuku_tgw01.id
   vpc_id             = module.main_vpc.vpc_id
-  subnet_ids         = module.main_vpc.private_subnet_id
+  subnet_ids         = module.main_vpc.isolated_subnet_id
 
   tags = {
     Name = "shinjuku-attach-tokyo-vpc01"

@@ -14,12 +14,15 @@ module "main_vpc" {
   dns_support  = var.networks["tokyo"].dns_support
   dns_hostname = var.networks["tokyo"].dns_hostname
 
-  public_subnets_config  = var.networks["tokyo"].public_subnets_config
-  private_subnets_config = var.networks["tokyo"].private_subnets_config
+  public_subnets_config   = var.networks["tokyo"].public_subnets_config
+  private_subnets_config  = var.networks["tokyo"].private_subnets_config
+  isolated_subnets_config = var.networks["tokyo"].isolated_subnets_config
+
 
   enable_igw         = var.networks["tokyo"].enable_igw
   enable_nat_gateway = var.networks["tokyo"].enable_nat_gateway
 }
+
 
 # ##########################################################################
 # TOKYO ASG COMPUTE (Hub)
