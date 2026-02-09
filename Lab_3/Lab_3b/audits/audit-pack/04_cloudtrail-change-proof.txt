@@ -4,10 +4,10 @@
             "EventId": "6c44ca85-9df1-4358-adfb-6d7ac708d6d7",
             "EventName": "AuthorizeSecurityGroupIngress",
             "ReadOnly": "false",
-            "AccessKeyId": "ASIA4DMVQMOC5DVMOYBB",
+            "AccessKeyId": "omitted",
             "EventTime": "2026-02-04T12:49:08-05:00",
             "EventSource": "ec2.amazonaws.com",
-            "Username": "Jaune",
+            "Username": "omitted",
             "Resources": [
                 {
                     "ResourceType": "AWS::EC2::SecurityGroup",
